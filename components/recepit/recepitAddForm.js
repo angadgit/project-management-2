@@ -1,9 +1,6 @@
 import React, { useRef } from "react";
 import { useFormik } from "formik"
-import { addRecepit, getRecepits } from "../../lib/recepitHelper";
-import { getUsers } from "../../lib/helper";
 import { useSession } from "next-auth/react"
-import { useMutation, useQuery, useQueryClient } from 'react-query';
 import FunderAddForm from "../funder/funderAddForm";
 import { useRouter } from 'next/router';
 import { BiPlusCircle } from "react-icons/bi";
@@ -12,21 +9,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function ReceiptAddForm({ fundDt, funderDt }) {
-  const inputRef = useRef(null);
   const router = useRouter();
   const { data: session } = useSession()
-  const queryClient = useQueryClient()
 
   const [funderPopUp, setFunderPopUp] = React.useState(false);
   const [fundTypePopUp, setFundTypePopUp] = React.useState(false);
 
-  useMutation(addRecepit, {
-    onSuccess: () => {
-      queryClient.prefetchQuery('recepits', getRecepits)
-    }
-  })
-
-  const { isLoading, isError, data: funderData, error } = useQuery('Funder', getUsers)
 
   const formik = useFormik({
     initialValues: {
@@ -87,8 +75,7 @@ export default function ReceiptAddForm({ fundDt, funderDt }) {
       });
     }
   }
-  if (isLoading) return <div>Funder is Loading...</div>;
-  if (isError) return <div>Got Error {error}</div>
+  
 
   return (
     <>

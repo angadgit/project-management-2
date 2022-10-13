@@ -56,7 +56,7 @@ export default function ReceiptUpdateForm({ id, fundDt, funderData }) {
       })
   }, [])
 
-  funderData.filter(item => item.funderName === funder).map(dt =>  {setFunder(dt.fullName), setfullName(dt.funderName), setcontactPerson(dt.contactPerson), setcontactNumber(dt.contactNumber), setemail(dt.email), setpan(dt.pan), setaddressLine1(dt.addressLine1), setaddressLine2(dt.addressLine2), setcountry(dt.country), setstate(dt.state), setpinCode(dt.pinCode)});
+  funderData.filter(item => item.funderName === funder).map(dt => { setFunder(dt.fullName), setfullName(dt.funderName), setcontactPerson(dt.contactPerson), setcontactNumber(dt.contactNumber), setemail(dt.email), setpan(dt.pan), setaddressLine1(dt.addressLine1), setaddressLine2(dt.addressLine2), setcountry(dt.country), setstate(dt.state), setpinCode(dt.pinCode) });
 
   const handleSubmit = async (e) => {
     // console.log(values)
@@ -134,7 +134,7 @@ export default function ReceiptUpdateForm({ id, fundDt, funderData }) {
           </select>
         </div>
         <div className="input-type">
-          <input type="text" name="fullName" value={fullName} onChange={e => setfullName(e.target.value)} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Full Name"/>
+          <input type="text" name="fullName" value={fullName} onChange={e => setfullName(e.target.value)} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Full Name" />
         </div>
         <div className="input-type">
           <input type="text" name="contactPerson" value={contactPerson} onChange={e => setcontactPerson(e.target.value)} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Contact Person" />

@@ -19,11 +19,11 @@ function MyApp({ Component, pageProps }) {
         height={5}
         showOnShallow={true}
       />
-      <QueryClientProvider client={queryClient}>
+      {/* <QueryClientProvider client={queryClient}> */}
         <Provider store={store}>
           <Component {...pageProps} />
         </Provider>
-      </QueryClientProvider>
+      {/* </QueryClientProvider> */}
     </SessionProvider>
   )
 }
