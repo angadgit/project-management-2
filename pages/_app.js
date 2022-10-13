@@ -7,7 +7,7 @@ import { store } from '../redux/store';
 import { Provider } from 'react-redux';
 
 // create a client
-// const queryClient = new QueryClient();
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -19,11 +19,11 @@ function MyApp({ Component, pageProps }) {
         height={5}
         showOnShallow={true}
       />
-     // <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
         <Provider store={store}>
           <Component {...pageProps} />
         </Provider>
-     // </QueryClientProvider>
+     </QueryClientProvider>
     </SessionProvider>
   )
 }
