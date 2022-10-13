@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 export default function Funder({ funderData }) {
   const { data: session } = useSession()
   const router = useRouter()
+  router.reload(window.location.pathname)
   const visible = useSelector((state) => state.app.client.toggleForm)
   const deleteId = useSelector(state => state.app.client.deleteId)
   const formId = useSelector((state) => state.app.client.formId)
