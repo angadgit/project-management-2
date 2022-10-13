@@ -12,6 +12,7 @@ import Image from "next/image";
 
 const App = ({ children }) => {
   const router = useRouter()
+  // console.log(router)
   const [collapsed, setCollapsed] = useState(false);
 
   function handleSignOut() {
@@ -22,9 +23,9 @@ const App = ({ children }) => {
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo my-5">
-        <Image src={'/assets/vedvika.png'} width={250} height={100} alt="github" className="mx-auto p-2"></Image>
+          <Image src={'/assets/vedvika.png'} width={250} height={100} alt="github" className="mx-auto p-2"></Image>
         </div>
-        <Menu
+        {/* <Menu
           theme="dark"
           mode="inline"
           // selectedKeys={[sideBarMenuKey]}
@@ -48,22 +49,79 @@ const App = ({ children }) => {
           <Menu.Item key="/logout" icon={<LogoutOutlined />} onClick={handleSignOut}>
             Logout
           </Menu.Item>
-        </Menu>
+        </Menu> */}
+        <Menu
+          theme="dark"
+          mode="inline"
+          // defaultSelectedKeys={router.route}
+          items={[
+            {
+              key: "1",
+              icon: <HomeOutlined />,
+              label: 'Home',
+              path: '/'
+            },
+            {
+              key: '2',
+              icon: <CopyOutlined />,
+              label: 'Funder',
+              path: '/funder'
+            },
+            {
+              key: '3',
+              icon: <UnorderedListOutlined />,
+              label: 'Receipt',
+              path: '/receipt'
+            },
+            {
+              key: '4',
+              icon: <UserOutlined />,
+              label: 'Profile',
+              path: '/profile'
+            },
+            {
+              key: '5',
+              icon: <ShopOutlined />,
+              label: 'Company Profile',
+              path: '/company-profile'
+            },
+            // {
+            //   key: '6',
+            //   icon: <LogoutOutlined />,
+            //   label: 'Logout',
+            //   path: '/logout',
+            //   onClick: {handleSignOut}
+            // },
+          ].map((item, index) => {
+            return {
+              key: index,
+              label: <Link href={`${item.path}`}>{item.label}</Link>,
+              icon: item.icon,
+            };
+          })}
+        />
       </Sider>
       <Layout className="site-layout">
         <Header
-          className="site-layout-background"
+          className="site-layout-background flex justify-between"
           style={{
             padding: 0,
           }}
         >
-          {React.createElement(
-            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-            {
-              className: "trigger",
-              onClick: () => setCollapsed(!collapsed),
-            }
-          )}
+          <div>
+            {React.createElement(
+              collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+              {
+                className: "trigger",
+                onClick: () => setCollapsed(!collapsed),
+              }
+            )}
+          </div>
+          <div className=" flex justify-between ">
+            <div className="items-end mr-5">
+              <a onClick={handleSignOut} className="text-red-600"><LogoutOutlined /></a>
+            </div>
+          </div>
         </Header>
         <Content
           className="site-layout-background"
