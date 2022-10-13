@@ -18,7 +18,7 @@ export default function Receipt({ dt, fundTypeData, funderData }) {
   const router = useRouter();
   const visible = useSelector((state) => state.app.client.toggleForm)
   const deleteId = useSelector(state => state.app.client.deleteId)
-  const queryclient = useQueryClient();
+  // const queryclient = useQueryClient();
 
 
   const dispatch = useDispatch()
