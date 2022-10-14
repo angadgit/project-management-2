@@ -3,7 +3,8 @@ import { useFormik } from "formik"
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { funderValidate } from "../../lib/validate";
+import styles from '../../styles/Form.module.css';
 
 export default function FunderAddForm() {
   const { data: session } = useSession()
@@ -29,13 +30,13 @@ export default function FunderAddForm() {
       nationality: '',
       website: '',
     },
-    // validate: registerValidate,
+    validate: funderValidate,
     onSubmit
   })
 
 
   async function onSubmit(values) {
-    console.log(values)
+    // console.log(values)
     let res = await fetch("/api/funderApi", {
       method: "POST", // or 'PUT'
       headers: {
@@ -56,11 +57,28 @@ export default function FunderAddForm() {
         theme: "light",
       });
       if (router.pathname === '/funder') {
-        console.log('path funder')
+        // console.log('path funder')
         refreshData()
+        formik.setValues({
+          user: session.user.email,
+          funderName: '',
+          contactPerson: '',
+          contactNumber: '',
+          email: '',
+          pan: '',
+          funderType: '',
+          funderCategory: '',
+          addressLine1: '',
+          addressLine2: '',
+          country: '',
+          state: '',
+          pinCode: '',
+          nationality: '',
+          website: '',
+        })
       } else {
         router.push('/receipt')
-        console.log('path receipt')
+        // console.log('path receipt')
       }
     } else {
       toast.error('Funder not insert !', {
@@ -91,35 +109,40 @@ export default function FunderAddForm() {
         theme="light"
       />
       <form onSubmit={formik.handleSubmit} className="grid lg:grid-cols-2 w-auto gap-2">
-        <div className="input-type">
-          <input type="text" name="funderName" {...formik.getFieldProps('funderName')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Funder Name" />
+
+        <div className={`${styles.input_group} ${formik.errors.funderName && formik.touched.funderName ? 'border-rose-600' : ''} ${!formik.errors.funderName && formik.touched.funderName ? 'border-green-600' : ''}`}>
+          <input type="text" name="funderName" {...formik.getFieldProps('funderName')} className={styles.input_text} placeholder="Funder Name" />
         </div>
-        <div className="input-type">
-          <input type="text" name="contactPerson" {...formik.getFieldProps('contactPerson')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Contact Person" />
+
+        <div className={`${styles.input_group} ${formik.errors.contactPerson && formik.touched.contactPerson ? 'border-rose-600' : ''} ${!formik.errors.contactPerson && formik.touched.contactPerson ? 'border-green-600' : ''}`}>
+          <input type="text" name="contactPerson" {...formik.getFieldProps('contactPerson')} className={styles.input_text} placeholder="Contact Person" />
         </div>
-        <div className="input-type">
-          <input type="number" name="contactNumber" {...formik.getFieldProps('contactNumber')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Contact No." />
+
+        <div className={`${styles.input_group} ${formik.errors.contactNumber && formik.touched.contactNumber ? 'border-rose-600' : ''} ${!formik.errors.contactNumber && formik.touched.contactNumber ? 'border-green-600' : ''}`}>
+          <input type="text" name="contactNumber" onKeyPress={(event) => { if (!/[0-9]/.test(event.key)) { event.preventDefault(); } }} {...formik.getFieldProps('contactNumber')} className={styles.input_text} placeholder="Contact No." />
         </div>
-        <div className="input-type">
-          <input type="email" name="email" {...formik.getFieldProps('email')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Email" />
+
+        <div className={`${styles.input_group} ${formik.errors.email && formik.touched.email ? 'border-rose-600' : ''} ${!formik.errors.email && formik.touched.email ? 'border-green-600' : ''}`}>
+          <input type="email" name="email" {...formik.getFieldProps('email')} className={styles.input_text} placeholder="Email" />
         </div>
-        <div className="input-type">
-          <input type="text" name="pan" {...formik.getFieldProps('pan')} className="border w-full px-5 py-3 focus:outline-none rounded-md uppercase" placeholder="PAN" />
+        
+        <div className={`${styles.input_group} ${formik.errors.pan && formik.touched.pan ? 'border-rose-600' : ''} ${!formik.errors.pan && formik.touched.pan ? 'border-green-600' : ''}`}>
+          <input type="text" name="pan" {...formik.getFieldProps('pan')} className={`${styles.input_text} uppercase`} placeholder="PAN" />
         </div>
 
         <div className="flex gap-2 items-center">
-          <div className="input-type w-full">
-            <select id="funderType" name="funderType" {...formik.getFieldProps('funderType')} className="border w-full px-5 py-3 focus:outline-none rounded-md">
-              <option value="">Choose a Funter Type</option>
+          <div className={`${styles.input_group} w-full ${formik.errors.funderType && formik.touched.funderType ? 'border-rose-600' : ''} ${!formik.errors.funderType && formik.touched.funderType ? 'border-green-600' : ''}`}>
+            <select id="funderType" name="funderType" {...formik.getFieldProps('funderType')} className={`${styles.input_text}`}>
+              <option value="" >Choose a Funter Type</option>
               <option value="CSR">CSR</option>
               <option value="Foundation">Foundation</option>
               <option value="Individual">Individual</option>
               <option value="Corporate Donation">Corporate Donation</option>
             </select>
           </div>
-          <div className="input-type w-full">
-            <select id="funderCategory" name="funderCategory" {...formik.getFieldProps('funderCategory')} className="border w-full px-5 py-3 focus:outline-none rounded-md">
-              <option value="DEFAULT">Choose a Funter Category</option>
+          <div className={`${styles.input_group} w-full ${formik.errors.funderCategory && formik.touched.funderCategory ? 'border-rose-600' : ''} ${!formik.errors.funderCategory && formik.touched.funderCategory ? 'border-green-600' : ''}`}>
+            <select id="funderCategory" name="funderCategory" {...formik.getFieldProps('funderCategory')} className={styles.input_text}>
+              <option value="">Choose a Funter Category</option>
               <option value="Domestic">Domestic</option>
               <option value="FCRA">FCRA</option>
             </select>
@@ -127,33 +150,33 @@ export default function FunderAddForm() {
         </div>
 
         <div className="flex gap-2 items-center">
-          <div className="input-type w-full">
-            <input type="text" name="addressLine1" {...formik.getFieldProps('addressLine1')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Address Line 1" />
+          <div className={`${styles.input_group} w-full ${formik.errors.addressLine1 && formik.touched.addressLine1 ? 'border-rose-600' : ''} ${!formik.errors.addressLine1 && formik.touched.addressLine1 ? 'border-green-600' : ''}`}>
+            <input type="text" name="addressLine1" {...formik.getFieldProps('addressLine1')} className={styles.input_text} placeholder="Address Line 1" />
           </div>
-          <div className="input-type w-full">
-            <input type="text" name="addressLine2" {...formik.getFieldProps('addressLine2')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Address Line 2" />
+          <div className={`${styles.input_group} w-full`}>
+            <input type="text" name="addressLine2" {...formik.getFieldProps('addressLine2')} className={styles.input_text} placeholder="Address Line 2" />
           </div>
         </div>
 
         <div className="flex gap-2 items-center">
-          <div className="input-type w-full">
-            <input type="text" name="country" {...formik.getFieldProps('country')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Country" />
+          <div className={`${styles.input_group} w-full ${formik.errors.country && formik.touched.country ? 'border-rose-600' : ''} ${!formik.errors.country && formik.touched.country ? 'border-green-600' : ''}`}>
+            <input type="text" name="country" {...formik.getFieldProps('country')} className={styles.input_text} placeholder="Country" />
           </div>
-          <div className="input-type w-full">
-            <input type="text" name="state" {...formik.getFieldProps('state')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="State" />
+          <div className={`${styles.input_group} w-full ${formik.errors.state && formik.touched.state ? 'border-rose-600' : ''} ${!formik.errors.state && formik.touched.state ? 'border-green-600' : ''}`}>
+            <input type="text" name="state" {...formik.getFieldProps('state')} className={styles.input_text} placeholder="State" />
           </div>
-          <div className="input-type w-full">
-            <input type="number" name="pinCode" {...formik.getFieldProps('pinCode')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Zip Code" />
+          <div className={`${styles.input_group} w-full ${formik.errors.pinCode && formik.touched.pinCode ? 'border-rose-600' : ''} ${!formik.errors.pinCode && formik.touched.pinCode ? 'border-green-600' : ''}`}>
+            <input type="text" name="pinCode" onKeyPress={(event) => { if (!/[0-9]/.test(event.key)) { event.preventDefault(); } }} {...formik.getFieldProps('pinCode')} className={styles.input_text} placeholder="Zip Code" />
           </div>
         </div>
 
 
         <div className="flex gap-2 items-center">
-          <div className="input-type">
-            <input type="text" name="nationality" {...formik.getFieldProps('nationality')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Nationality" />
+          <div className={`${styles.input_group} w-full ${formik.errors.nationality && formik.touched.nationality ? 'border-rose-600' : ''} ${!formik.errors.nationality && formik.touched.nationality ? 'border-green-600' : ''}`}>
+            <input type="text" name="nationality" {...formik.getFieldProps('nationality')} className={styles.input_text} placeholder="Nationality" />
           </div>
-          <div className="input-type">
-            <input type="text" name="website" {...formik.getFieldProps('website')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Website" />
+          <div className={`${styles.input_group} w-full`}>
+            <input type="text" name="website" {...formik.getFieldProps('website')} className={styles.input_text} placeholder="Website" />
           </div>
         </div>
 

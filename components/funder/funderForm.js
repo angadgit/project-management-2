@@ -1,4 +1,5 @@
 import UpdateFunderForm from "./funderUpdateForm";
+import testing from './testingForm';
 import AddFunderForm from "./funderAddForm";
 import { useSelector } from "react-redux";
 import React, { useReducer } from "react";
@@ -13,15 +14,15 @@ const formReducer = (state, event) => {
 
 
 export default function Form({ data }) {
-    
-    
+
+
     const [formData, setFormData] = useReducer(formReducer, {})
-    
+
     const formId = useSelector((state) => state.app.client.formId)
 
     return (
         <div className="container mx-auto py-5">
-            {formId ? UpdateFunderForm({ id: formId, formData, setFormData }) : AddFunderForm({ formData, setFormData })}
+            {formId ? testing({ id: formId, formData, setFormData }) : AddFunderForm({ formData, setFormData })}
         </div>
     )
 }

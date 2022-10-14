@@ -3,7 +3,8 @@ import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useState, useEffect } from "react";
-
+import { funderValidate } from "../../lib/validate";
+import { Formik, Form, Field } from "formik";
 
 export default function FunderAddForm({ id }) {
   const { data: session } = useSession()
@@ -61,44 +62,45 @@ export default function FunderAddForm({ id }) {
     const data = {
       user: session.user.email, funderName, contactPerson, contactNumber, email, pan, funderType, funderCategory, addressLine1, addressLine2, country, state, pinCode, nationality, website
     }
-    console.log(data)
-    let res = await fetch(`/api/funderApi/${id}`, {
-      method: "PUT", // or 'PUT'
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const res2 = await res.json();
-    if (res2.success === 'Success') {
-      toast.success('Funder Updated Success !', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    if (funderValidate) {
+      let res = await fetch(`/api/funderApi/${id}`, {
+        method: "PUT", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       });
-      if (router.pathname === '/funder') {
-        console.log('path funder')
-        refreshData()
+      const res2 = await res.json();
+      if (res2.success === 'Success') {
+        toast.success('Funder Updated Success !', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        if (router.pathname === '/funder') {
+          console.log('path funder')
+          refreshData()
+        } else {
+          router.push('/receipt')
+          console.log('path receipt')
+        }
       } else {
-        router.push('/receipt')
-        console.log('path receipt')
+        toast.error('Funder not Updated !', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
-    } else {
-      toast.error('Funder not Updated !', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
     }
   }
 
@@ -161,7 +163,7 @@ export default function FunderAddForm({ id }) {
 
         <div className="flex gap-2 items-center">
           <div className="input-type w-full">
-            <input type="text" name="addressLine1" value={funderName} onChange={e => setaddressLine1(e.target.value)} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Address Line 1" />
+            <input type="text" name="addressLine1" value={addressLine1} onChange={e => setaddressLine1(e.target.value)} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Address Line 1" />
           </div>
           <div className="input-type w-full">
             <input type="text" name="addressLine2" value={addressLine2} onChange={e => setaddressLine2(e.target.value)} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Address Line 2" />

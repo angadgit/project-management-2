@@ -23,7 +23,8 @@ const App = ({ children }) => {
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo my-5">
-          <Image src={'/assets/vedvika.png'} width={250} height={100} alt="github" className="mx-auto p-2"></Image>
+          {/* <Image src={'/assets/vedvika.png'} width={250} height={100} alt="logo" className="mx-auto p-2"></Image> */}
+          <img src={'/assets/vedvika.png'}  width={250} height={100} alt="logo" className="mx-auto p-2" />
         </div>
         {/* <Menu
           theme="dark"
@@ -53,34 +54,34 @@ const App = ({ children }) => {
         <Menu
           theme="dark"
           mode="inline"
-          // defaultSelectedKeys={router.route}
+          defaultSelectedKeys={router.asPath}
           items={[
             {
-              key: "1",
+              key: "/",
               icon: <HomeOutlined />,
               label: 'Home',
               path: '/'
             },
             {
-              key: '2',
+              key: '/funder',
               icon: <CopyOutlined />,
               label: 'Funder',
               path: '/funder'
             },
             {
-              key: '3',
+              key: '/receipt',
               icon: <UnorderedListOutlined />,
               label: 'Receipt',
               path: '/receipt'
             },
             {
-              key: '4',
+              key: '/profile',
               icon: <UserOutlined />,
               label: 'Profile',
               path: '/profile'
             },
             {
-              key: '5',
+              key: '/company-profile',
               icon: <ShopOutlined />,
               label: 'Company Profile',
               path: '/company-profile'

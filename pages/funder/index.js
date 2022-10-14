@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { getSession, useSession } from "next-auth/react"
 import DefaultLayout from '../../components/DefaultLayout';
 import { BiUserPlus } from "react-icons/bi";
@@ -8,9 +8,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleChangeAction, deleteAction } from '../../redux/reducer';
 import { BiX, BiCheck } from "react-icons/bi";
 import { useRouter } from 'next/router';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export default function Funder({ funderData }) {
+export default function Funder({ funderData, recepitData }) {
   const { data: session } = useSession()
+  console.log('recepit data', recepitData)
+  // console.log('funder data', funderData)
   const router = useRouter()
   const visible = useSelector((state) => state.app.client.toggleForm)
   const deleteId = useSelector(state => state.app.client.deleteId)
@@ -26,12 +30,46 @@ export default function Funder({ funderData }) {
     dispatch(toggleChangeAction())
   }
 
+  const [ftCheck, setFtCheck] = React.useState()
+  useEffect(()=>{    
+    const ft = funderData?.filter(item => item._id === deleteId).map(item => setFtCheck(item.funderName))
+  })
+    
+
+  // console.log(ftCheck, recepitData.map(item => item.fullName))
+
+
   const deletehandler = async () => {
     const id = deleteId;
     if (id) {
-      await fetch(`/api/funderApi/${id}`, { method: "DELETE", })
-      refreshData();
-      await dispatch(deleteAction(null));
+      if (recepitData.map(item => item.fullName).indexOf(ftCheck)) {
+        await fetch(`/api/funderApi/${id}`, { method: "DELETE", })
+        refreshData();
+        await dispatch(deleteAction(null));
+        toast.success('Funder Removed', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+      else {
+        toast.info('Receipt generated please remove receipt !', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        await dispatch(deleteAction(null));
+      }
     }
   }
 
@@ -40,27 +78,43 @@ export default function Funder({ funderData }) {
     await dispatch(deleteAction(null))
   }
 
-  return (
-    <DefaultLayout>
-      <div className="container mx-auto flex justify-between py-5 border-b">
-        <div className="left flex gap-3">
-          <button className='flex bg-indigo-500 text-white px-4 py-2 border rounded-md hover:bg-grary-50 hover:border-indigo-500 hover:text-gray-800' onClick={handler}>
-            Add Funder <span className='px-1'><BiUserPlus size={23}></BiUserPlus></span>
-          </button>
+  try {
+    return (
+      <DefaultLayout>
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        <div className="container mx-auto flex justify-between py-5 border-b">
+          <div className="left flex gap-3">
+            <button className='flex bg-indigo-500 text-white px-4 py-2 border rounded-md hover:bg-grary-50 hover:border-indigo-500 hover:text-gray-800' onClick={handler}>
+              Add Funder <span className='px-1'><BiUserPlus size={23}></BiUserPlus></span>
+            </button>
+          </div>
+          {deleteId ? DeleteComponent({ deletehandler, canclehandler }) : <></>}
         </div>
-        {deleteId ? DeleteComponent({ deletehandler, canclehandler }) : <></>}
-      </div>
 
-      {/* collapsable form */}
-      {visible ? <FunderForm data={funderData} /> : <></>}
+        {/* collapsable form */}
+        {visible ? <FunderForm data={funderData} /> : <></>}
 
-      {/* table */}
-      <div className="container mx-auto">
-        <FunderTable data={funderData} />
-      </div>
+        {/* table */}
+        <div className="container mx-auto">
+          <FunderTable data={funderData} />
+        </div>
 
-    </DefaultLayout>
-  )
+      </DefaultLayout>
+    )
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 function DeleteComponent({ deletehandler, canclehandler }) {
@@ -77,7 +131,7 @@ function DeleteComponent({ deletehandler, canclehandler }) {
 
 export async function getServerSideProps({ req }) {
   const session = await getSession({ req })
-
+  // console.log(req)
   // authorize user return session
   if (!session) {
     return {
@@ -91,8 +145,11 @@ export async function getServerSideProps({ req }) {
   const res = await fetch(`${process.env.BaseURL}api/funderApi`)
   const funderData = await res.json()
 
+  const res2 = await fetch(`${process.env.BaseURL}api/recepitApi`)
+  const dt = await res2.json()
+  const recepitData = dt.filter(item => item.user === session.user.email)
 
   return {
-    props: { session, funderData }
+    props: { session, funderData, recepitData }
   }
 }

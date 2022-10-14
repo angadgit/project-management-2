@@ -56,40 +56,40 @@ export default function RecepitPrint_1({Rid}) {
               <img src={dt.logo} alt="logo" width="150" height="150" className="bg-black" />
             </div>
             <div className='col-start-2 col-span-4'>
-              <p className='text-lg'>{dt.companyName}</p>
-              <span>{dt.streetAddress + " " + dt.city + " " + dt.state + " " + dt.pin}</span>
-              <p className='flex justify-center'> Mobile:- <span className='mr-5'>{dt.contactNo}</span>  Email :- <span>{dt.email}</span></p>
+              <p className='text-lg mb-0'>{dt.name}</p>
+              <span>{dt.addressLine1+ " " + dt.addressLine2 + " " + dt.city + " " + dt.state + " " + dt.pinCode}</span>
+              <p className='flex justify-center gap-1'> Mobile <span className=''>{dt.mobileNo},</span> Office no <span className=''>{dt.officeNo},</span>  Email <span className=''>{dt.email}</span></p>
             </div>
             <div className='text-end mr-5'>
               <p>10001</p>
             </div>
           </div>
           <div className='text-end mr-5'>
-            <p>Date :- {new Date().toLocaleString() + ''}</p>
+            <p>Date {new Date().toLocaleString() + ''}</p>
           </div>
           <div className='grid grid-cols-2'>
             <div className='text-start'>
-              <p>Received From :- {recepitData?.fullName}</p>
+              <p>Received From {recepitData?.fullName}</p>
             </div>
             <div className='text-end mr-8'>
-              <p>Amount :- {recepitData?.receiptAmount}</p>
+              <p>Amount {recepitData?.receiptAmount}</p>
             </div>
           </div>
           <div className='grid grid-cols-1'>
-            <p className='text-start'>As Donations for :- {recepitData?.description}</p>
+            <p className='text-start'>As {recepitData?.typeFund} for {recepitData?.description}</p>
           </div>
           <div className='grid grid-cols-2 mb-5'>
-            <p className='text-start'> payment mode :- {recepitData?.funderType}</p>
+            <p className='text-start'> payment mode {recepitData?.funderType}</p>
             {/* <h1>by</h1> */}
           </div>
           <hr />
           <div className='grid grid-cols-3 '>
 
-            <div className='flex'>Pan :- <h1 className="font-semibold ml-2 uppercase">{dt.pan}</h1> </div>
-            <div className='flex'>12A Registration no :- <h1 className="font-semibold ml-2 uppercase">{dt.twelveA}</h1> </div>
-            <div className='flex'>80G Registration no :- <h1 className="font-semibold ml-2 uppercase">{dt.eightyG}</h1> </div>
-            <div className='flex'>Organization Type :- <h1 className="font-semibold ml-2">{dt.organizationType}</h1> </div>
-            <div className='flex col-span-2 gap-2'>Organization Registration no :- <h1 className="font-semibold">{dt.organizationRegistrationNo}</h1> </div>
+            <div className='flex'>Pan <h1 className="font-semibold ml-2 uppercase">{dt.pan}</h1> </div>
+            <div className='flex'>12A Registration no <h1 className="font-semibold ml-2 uppercase">{dt.twelveA}</h1> </div>
+            <div className='flex'>80G Registration no <h1 className="font-semibold ml-2 uppercase">{dt.eightyG}</h1> </div>
+            <div className='flex'>Organization Type <h1 className="font-semibold ml-2">{dt.organizationType}</h1> </div>
+            <div className='flex col-span-2 gap-2'>Organization Registration no <h1 className="font-semibold">{dt.organizationRegistrationNo}</h1> </div>
 
           </div>
           <hr />

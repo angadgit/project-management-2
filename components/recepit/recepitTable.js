@@ -41,7 +41,7 @@ export default function RecepitTable({ data }) {
         </thead>
         <tbody className="bg-gray-200">
           {
-            data?.filter(item => item.user === session.user.email).map((obj, i) =>  <Tr {...obj} key={i} /> )
+            data?.filter(item => item.user === session.user.email).map((obj, i) => <Tr {...obj} key={i} />)
           }
         </tbody>
       </table>
@@ -93,7 +93,7 @@ function Tr({ _id, fullName, funderType, receiptAmount, typeFund }) {
         <td className="px-16 py-2">
           <span>{typeFund || "Unknown"}</span>
         </td>
-        <td className="px-16 py-2 flex justify-around gap-5">
+        <td className="px-16 py-2 flex justify-around gap-1">
           <button className="cursor" onClick={onView} ><BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow></button>
           <button className="cursor" onClick={onUpdate} ><BiEdit size={25} color={"rgb(34,197,94)"}></BiEdit></button>
           <button className="cursor" onClick={onDelete}><BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt></button>
