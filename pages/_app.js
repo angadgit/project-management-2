@@ -12,13 +12,13 @@ const queryClient = new QueryClient();
 function MyApp({ Component, pageProps }) {
   return (
     <SessionProvider session={pageProps.session}>
-      <NextNProgress
-        color="#FFA500"
-        startPosition={0.3}
-        stopDelayMs={200}
-        height={5}
-        showOnShallow={true}
-      />
+//       <NextNProgress
+//         color="#FFA500"
+//         startPosition={0.3}
+//         stopDelayMs={200}
+//         height={5}
+//         showOnShallow={true}
+//       />
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
           <Component {...pageProps} />
