@@ -2,28 +2,28 @@ import '../styles/globals.css'
 import { SessionProvider } from 'next-auth/react'
 import '../styles/DefaultLayout.css'
 import NextNProgress from "nextjs-progressbar";
-import { QueryClientProvider, QueryClient } from 'react-query';
 import { store } from '../redux/store';
 import { Provider } from 'react-redux';
-
-// create a client
-const queryClient = new QueryClient();
+import Router from 'next/router';
 
 function MyApp({ Component, pageProps }) {
+
+  Router.events.on("routeChangeError", (err, url, { shallow }) => {
+    console.log("Navigating to: " + "url: " + url, {cancelled: err.cancelled} )
+});
+
   return (
     <SessionProvider session={pageProps.session}>
-      <NextNProgress
+      {/* <NextNProgress
         color="#FFA500"
         startPosition={0.3}
         stopDelayMs={200}
         height={5}
-        // showOnShallow={true}
-      />
-      {/* <QueryClientProvider client={queryClient}> */}
-        <Provider store={store}>
-          <Component {...pageProps} />
-        </Provider>
-      {/* </QueryClientProvider> */}
+      // showOnShallow={true}
+      /> */}
+      <Provider store={store}>
+        <Component {...pageProps} />
+      </Provider>
     </SessionProvider>
   )
 }

@@ -1,21 +1,13 @@
 import { BiEdit, BiTrashAlt, BiShow } from "react-icons/bi";
-import { getRecepits } from "../../lib/recepitHelper";
-import { useQuery } from 'react-query';
 import { useSession } from "next-auth/react"
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleChangeAction, updateAction, deleteAction } from "../../redux/reducer";
-import { useEffect, useState } from "react";
-import FunderAddForm from "../funder/funderAddForm";
+import {  useState } from "react";
 import RecepitPrint_1 from "../printPages/recepitPrint_1";
-import useSWR from 'swr'
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
 export default function RecepitTable({ data }) {
   const { data: session } = useSession()
-  // const { data: recepit, error } = useSWR('/api/recepitApi', fetcher)
-  // if (error) return <div>Failed to load</div>
-  // if (!recepit) return <div>Loading...</div>
 
   return (
     <>

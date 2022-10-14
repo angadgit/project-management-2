@@ -24,7 +24,7 @@ const App = ({ children }) => {
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo my-5">
           {/* <Image src={'/assets/vedvika.png'} width={250} height={100} alt="logo" className="mx-auto p-2"></Image> */}
-          <img src={'/assets/vedvika.png'}  width={250} height={100} alt="logo" className="mx-auto p-2" />
+          <img src={'/assets/vedvika.png'} width={250} height={100} alt="logo" className="mx-auto p-2" />
         </div>
         {/* <Menu
           theme="dark"
@@ -51,7 +51,7 @@ const App = ({ children }) => {
             Logout
           </Menu.Item>
         </Menu> */}
-        <Menu
+        {/* <Menu
           theme="dark"
           mode="inline"
           defaultSelectedKeys={router.asPath}
@@ -100,7 +100,14 @@ const App = ({ children }) => {
               icon: item.icon,
             };
           })}
-        />
+        /> */}
+
+        <ul className="content-center">
+          <Link href={'/funder'} ><li className='text-white cursor-pointer'>Funder</li></Link>
+          <Link href={'/receipt'}><li className='text-white cursor-pointer'>Recepit</li></Link>
+          <Link href={'/profile'}><li className='text-white cursor-pointer'>Profile</li></Link>
+        </ul>
+
       </Sider>
       <Layout className="site-layout">
         <Header

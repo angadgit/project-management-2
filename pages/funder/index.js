@@ -13,8 +13,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Funder({ funderData, recepitData }) {
   const { data: session } = useSession()
-  console.log('recepit data', recepitData)
-  // console.log('funder data', funderData)
   const router = useRouter()
   const visible = useSelector((state) => state.app.client.toggleForm)
   const deleteId = useSelector(state => state.app.client.deleteId)

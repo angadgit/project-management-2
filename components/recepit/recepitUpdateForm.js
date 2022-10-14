@@ -59,12 +59,10 @@ export default function ReceiptUpdateForm({ id, fundDt, funderData }) {
   funderData.filter(item => item.funderName === funder).map(dt => { setFunder(dt.fullName), setfullName(dt.funderName), setcontactPerson(dt.contactPerson), setcontactNumber(dt.contactNumber), setemail(dt.email), setpan(dt.pan), setaddressLine1(dt.addressLine1), setaddressLine2(dt.addressLine2), setcountry(dt.country), setstate(dt.state), setpinCode(dt.pinCode) });
 
   const handleSubmit = async (e) => {
-    // console.log(values)
     e.preventDefault();
     const data = {
       user: session.user.email, fullName, contactPerson, contactNumber, email, pan, addressLine1, addressLine2, country, state, pinCode, funderType, receiptAmount, typeFund, description
     }
-    console.log(data)
     let res = await fetch(`/api/recepitApi/${id}`, {
       method: "PUT", // or 'PUT'
       headers: {
@@ -85,11 +83,9 @@ export default function ReceiptUpdateForm({ id, fundDt, funderData }) {
         theme: "light",
       });
       if (router.pathname === '/receipt') {
-        console.log('path recepit')
         refreshData()
       } else {
         router.push('/receipt')
-        console.log('path receipt')
       }
     } else {
       toast.error('Recepit not Updated !', {

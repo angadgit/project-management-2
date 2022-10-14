@@ -6,10 +6,7 @@ import ReceiptForm from '../../components/recepit/recepitForm';
 import RecepitTable from '../../components/recepit/recepitTable';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleChangeAction, deleteAction } from '../../redux/reducer';
-import { deleteRecepit, getRecepits } from '../../lib/recepitHelper';
 import { BiX, BiCheck } from "react-icons/bi";
-import { useQueryClient } from 'react-query';
-import useSWR from 'swr'
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 import { useRouter } from 'next/router';
