@@ -102,10 +102,47 @@ const App = ({ children }) => {
           })}
         /> */}
 
-        <ul className="content-center">
-          <Link href={'/funder'} ><li className='text-white cursor-pointer'>Funder</li></Link>
-          <Link href={'/receipt'}><li className='text-white cursor-pointer'>Recepit</li></Link>
-          <Link href={'/profile'}><li className='text-white cursor-pointer'>Profile</li></Link>
+        <ul className="items-center list-none">
+
+          <div>
+
+          <div className="py-2 gap-2 flex content-center">
+            <span className="text-gray-50">
+              <HomeOutlined />
+            </span>
+            <Link href={'/'} ><li className="text-xl text-gray-50 inline-block relative cursor-pointer"> <span > Home</span></li></Link>
+          </div>
+
+          <div className="py-2 gap-2 flex content-center">
+            <span className="text-gray-50">
+              <UserOutlined />
+            </span>
+            <Link href={'/profile'}><li className="text-xl text-gray-50 inline-block relative cursor-pointer"> <span> User Profile</span> </li></Link>
+          </div>
+
+          <div className="py-2 gap-2 flex content-center">
+            <span className="text-gray-50">
+              <ShopOutlined />
+            </span>
+            <Link href={'/company-profile'}><li className="text-xl text-gray-50 inline-block relative cursor-pointer"> <span> Company Profile</span> </li></Link>
+          </div>
+
+          <div className="py-2 gap-2 flex content-center">
+            <span className="text-gray-50">
+              <CopyOutlined />
+            </span>
+            <Link href={'/funder'} ><li className="text-xl text-gray-50 inline-block relative cursor-pointer"> <span> Funder</span></li></Link>
+          </div>
+
+          <div className="py-2 gap-2 flex content-center">
+            <span className="text-gray-50">
+              <UnorderedListOutlined />
+            </span>
+            <Link href={'/receipt'}><li className="text-xl text-gray-50 inline-block relative cursor-pointer"> <span> Recepit</span></li></Link>
+          </div>
+
+          </div>
+
         </ul>
 
       </Sider>

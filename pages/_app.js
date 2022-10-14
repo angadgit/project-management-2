@@ -14,13 +14,13 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <SessionProvider session={pageProps.session}>
-      {/* <NextNProgress
+      <NextNProgress
         color="#FFA500"
         startPosition={0.3}
-        stopDelayMs={200}
+        // stopDelayMs={200}
         height={5}
       // showOnShallow={true}
-      /> */}
+      />
       <Provider store={store}>
         <Component {...pageProps} />
       </Provider>
