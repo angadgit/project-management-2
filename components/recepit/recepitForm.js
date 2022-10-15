@@ -11,14 +11,14 @@ const formReducer = (state, event) => {
     }
 }
 
-export default function Form({ fundTypeData, data, funderData }) {
+export default function Form({ fundTypeData, data, funderData, companyProfileData }) {
 
     const [formData, setFormData] = useReducer(formReducer, {})
     const formId = useSelector((state) => state.app.client.formId)
 
     return (
         <div className="container mx-auto py-5">
-            {formId ? UpdateRecepitForm({ id: formId, formData, setFormData, fundDt: fundTypeData, recepitData: data, funderData }) : AddRecepitForm({ formData, setFormData, fundDt: fundTypeData, funderDt: funderData })}
+            {formId ? UpdateRecepitForm({ id: formId, formData, setFormData, fundDt: fundTypeData, recepitData: data, funderData }) : AddRecepitForm({ formData, setFormData, fundDt: fundTypeData, funderDt: funderData, companyProfileData })}
         </div>
     )
 }

@@ -7,13 +7,21 @@ import { BiPlusCircle } from "react-icons/bi";
 import FundTypeForm from "../fundType/fundTypeForm";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import styles from '../../styles/Form.module.css';
+import { recepitValidate } from "../../lib/validate";
 
-export default function ReceiptAddForm({ fundDt, funderDt }) {
+export default function ReceiptAddForm({ fundDt, funderDt, companyProfileData }) {
   const router = useRouter();
   const { data: session } = useSession()
-
+  // console.log('companyProfileData', companyProfileData)
   const [funderPopUp, setFunderPopUp] = React.useState(false);
   const [fundTypePopUp, setFundTypePopUp] = React.useState(false);
+
+  const [companyuserCheck, setCompanyuserCheck] = React.useState()
+  React.useEffect(() => {
+    companyProfileData?.map(item => setCompanyuserCheck(item.user))
+    // console.log(companyuserCheck)
+  }, [companyuserCheck])
 
 
   const formik = useFormik({
@@ -35,35 +43,67 @@ export default function ReceiptAddForm({ fundDt, funderDt }) {
       typeFund: '',
       description: '',
     },
-    // validate: registerValidate,
+    validate: recepitValidate,
     onSubmit
   })
 
   funderDt?.filter(item => item.funderName === formik.values?.funder).map(item => formik.setValues({ user: session.user.email, fullName: item.funderName || '', contactPerson: item.contactPerson || '', contactNumber: item.contactNumber || '', email: item.email || '', pan: item.pan || '', addressLine1: item.addressLine1 || '', addressLine2: item.addressLine2 || '', country: item.country || '', state: item.state || '', pinCode: item.pinCode || '' }))
 
   async function onSubmit(values) {
-    let res = await fetch("/api/recepitApi", {
-      method: "POST", // or 'PUT'
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
-    const res2 = await res.json();
-    if (res2.success === 'Success') {
-      toast.success('Recepit Add Success !', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    // console.log(values)
+    if (companyuserCheck) {
+      let res = await fetch("/api/recepitApi", {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
       });
-      router.push('/receipt')
+      const res2 = await res.json();
+      if (res2.success === 'Success') {
+        toast.success('Recepit Add Success !', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        router.push('/receipt')
+        formik.setValues({
+          user: session.user.email,
+          funder: '',
+          fullName: '',
+          contactPerson: '',
+          contactNumber: '',
+          email: '',
+          pan: '',
+          addressLine1: '',
+          addressLine2: '',
+          country: '',
+          state: '',
+          pinCode: '',
+          funderType: '',
+          receiptAmount: '',
+          typeFund: '',
+          description: '',
+        })
+      } else {
+        toast.error('Recepit not insert !', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
     } else {
-      toast.error('Recepit not insert !', {
+      toast.info('Create A Company Profile !', {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -75,7 +115,7 @@ export default function ReceiptAddForm({ fundDt, funderDt }) {
       });
     }
   }
-  
+
 
   return (
     <>
@@ -91,57 +131,58 @@ export default function ReceiptAddForm({ fundDt, funderDt }) {
         pauseOnHover
         theme="light"
       />
-      <form className="grid lg:grid-cols-2 w-4/6 gap-4" onSubmit={formik.handleSubmit}>
-        <div className="flex input-type gap-1">
-          <select id="funder" name="funder" {...formik.getFieldProps('funder')}  className="border w-full px-5 py-3 focus:outline-none rounded-md">
-            <option value={null}>Choose a Funter</option>
+      <form className="grid lg:grid-cols-2 w-auto gap-4" onSubmit={formik.handleSubmit}>
+        <div className={`${styles.input_group} `}>
+          <select id="funder" name="funder" {...formik.getFieldProps('funder')} className={styles.input_text}>
+            <option value=''>Choose a Funter</option>
             {
               funderDt?.filter(item => item.user === session.user.email).map((obj) => <option value={obj.funderName || ''} key={obj._id} > {obj.funderName} </option>)
             }
           </select>
-          <BiPlusCircle onClick={() => setFunderPopUp(true)} className='text-4xl text-green-300 m-1 cursor-pointer' />
+          <BiPlusCircle onClick={() => setFunderPopUp(true)} className='text-4xl text-green-400 my-auto cursor-pointer' />
         </div>
-        <div className="input-type">
-          <input type="text" name="fullName" {...formik.getFieldProps('fullName')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Full Name" disabled />
+        <div className={styles.input_group}>
+          <input type="text" name="fullName" {...formik.getFieldProps('fullName')} className={styles.input_text} placeholder="Full Name" disabled />
         </div>
-        <div className="input-type">
-          <input type="text" name="contactPerson" {...formik.getFieldProps('contactPerson')} className="border w-full px-5 py-3 focus:outline-none rounded-md " placeholder="Contact Person" disabled />
+        <div className={styles.input_group}>
+          <input type="text" name="contactPerson" {...formik.getFieldProps('contactPerson')} className={styles.input_text} placeholder="Contact Person" disabled />
         </div>
-        <div className="input-type">
-          <input type="number" name="contactNumber" {...formik.getFieldProps('contactNumber')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Contact No." disabled />
+        <div className={styles.input_group}>
+          <input type="number" name="contactNumber" {...formik.getFieldProps('contactNumber')} className={styles.input_text} placeholder="Contact No." disabled />
         </div>
-        <div className="input-type">
-          <input type="email" name="email" {...formik.getFieldProps('email')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Email" disabled />
+        <div className={styles.input_group}>
+          <input type="email" name="email" {...formik.getFieldProps('email')} className={styles.input_text} placeholder="Email" disabled />
         </div>
-        <div className="input-type">
-          <input type="text" name="pan" {...formik.getFieldProps('pan')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="PAN" disabled />
-        </div>
-
-        <div className="flex gap-2 items-center">
-          <div className="input-type w-full">
-            <input type="text" name="addressLine1" {...formik.getFieldProps('addressLine1')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Address Line 1" disabled />
-          </div>
-          <div className="input-type w-full">
-            <input type="text" name="addressLine2" {...formik.getFieldProps('addressLine2')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Address Line 2" disabled />
-          </div>
+        <div className={styles.input_group}>
+          <input type="text" name="pan" {...formik.getFieldProps('pan')} className={styles.input_text} placeholder="PAN" disabled />
         </div>
 
         <div className="flex gap-2 items-center">
-          <div className="input-type w-full">
-            <input type="text" name="country" {...formik.getFieldProps('country')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Country" disabled />
+          <div className={`${styles.input_group} w-full `}>
+            <input type="text" name="addressLine1" {...formik.getFieldProps('addressLine1')} className={styles.input_text} placeholder="Address Line 1" disabled />
           </div>
-          <div className="input-type w-full">
-            <input type="text" name="state" {...formik.getFieldProps('state')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="State" disabled />
+
+          <div className={`${styles.input_group} w-full `}>
+            <input type="text" name="addressLine2" {...formik.getFieldProps('addressLine2')} className={styles.input_text} placeholder="Address Line 2" disabled />
           </div>
-          <div className="input-type w-full">
-            <input type="number" name="pinCode" {...formik.getFieldProps('pinCode')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Zip Code" disabled />
+        </div>
+
+        <div className="flex gap-2 items-center">
+          <div className={`${styles.input_group} w-full `}>
+            <input type="text" name="country" {...formik.getFieldProps('country')} className={styles.input_text} placeholder="Country" disabled />
+          </div>
+          <div className={`${styles.input_group} w-full `}>
+            <input type="text" name="state" {...formik.getFieldProps('state')} className={styles.input_text} placeholder="State" disabled />
+          </div>
+          <div className={`${styles.input_group} w-full `}>
+            <input type="number" name="pinCode" {...formik.getFieldProps('pinCode')} className={styles.input_text} placeholder="Zip Code" disabled />
           </div>
         </div>
 
 
         <div className="flex gap-2 items-center">
-          <div className="input-type w-full">
-            <select id="funderType" name="funderType" {...formik.getFieldProps('funderType')} className="border w-full px-5 py-3 focus:outline-none rounded-md">
+          <div className={`${styles.input_group} w-full ${formik.errors.funderType && formik.touched.funderType ? 'border-rose-600' : ''} ${!formik.errors.funderType && formik.touched.funderType ? 'border-green-600' : ''}`}>
+            <select id="funderType" name="funderType" {...formik.getFieldProps('funderType')} className={styles.input_text}>
               <option value=''>Choose a Funter Type</option>
               <option value="Cash">Cash</option>
               <option value="Bank">Bank</option>
@@ -149,23 +190,23 @@ export default function ReceiptAddForm({ fundDt, funderDt }) {
               <option value="UPI">UPI</option>
             </select>
           </div>
-          <div className="input-type w-full">
-            <input type="number" name="receiptAmount" {...formik.getFieldProps('receiptAmount')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="Receipt Amount" />
+          <div className={`${styles.input_group} w-full ${formik.errors.receiptAmount && formik.touched.receiptAmount ? 'border-rose-600' : ''} ${!formik.errors.receiptAmount && formik.touched.receiptAmount ? 'border-green-600' : ''}`}>
+            <input type="text" name="receiptAmount" {...formik.getFieldProps('receiptAmount')} onKeyPress={(event) => { if (!/[0-9]/.test(event.key)) { event.preventDefault(); } }} className={styles.input_text} placeholder="Receipt Amount" />
           </div>
         </div>
 
-        <div className="flex gap-4 items-center">
-          <div className="input-type w-full flex">
-            <select id="typeFund" name="typeFund" {...formik.getFieldProps('typeFund')} className="border w-full px-5 py-3 focus:outline-none rounded-md">
+        <div className="flex gap-2 items-center">
+          <div className={`${styles.input_group} w-full ${formik.errors.typeFund && formik.touched.typeFund ? 'border-rose-600' : ''} ${!formik.errors.typeFund && formik.touched.typeFund ? 'border-green-600' : ''}`}>
+            <select id="typeFund" name="typeFund" {...formik.getFieldProps('typeFund')} className={styles.input_text}>
               <option value=''>Choose Type of Fund</option>
               {
                 fundDt?.filter(item => item.user === session.user.email).map((obj) => <option value={obj.name || ''} key={obj._id} > {obj.name} </option>)
               }
             </select>
-            <BiPlusCircle onClick={() => setFundTypePopUp(true)} className='text-4xl text-green-300 m-1 cursor-pointer' />
+            <BiPlusCircle onClick={() => setFundTypePopUp(true)} className='text-4xl text-green-300 my-auto cursor-pointer' />
           </div>
-          <div className="input-type w-full">
-            <input type="text" name="description" {...formik.getFieldProps('description')} className="border w-full px-5 py-3 focus:outline-none rounded-md" placeholder="description" />
+          <div className={`${styles.input_group} w-full `}>
+            <input type="text" name="description" {...formik.getFieldProps('description')} className={styles.input_text} placeholder="description" />
           </div>
         </div>
 

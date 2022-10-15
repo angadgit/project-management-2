@@ -55,7 +55,7 @@ function User({ session, handleSignOut, funderData, recepitData }) {
             <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Total Funder</h5>
           </a>
           <p className="font-semibold dark:text-white text-xl">
-            {funderData?.filter(item => item.user === session.user.email).map((item, i) => i+1 )}
+            {funderData?.filter(item => item.user === session.user.email).map((item, i) => i).reduce((a, b) => a + b,1)}
           </p>
         </div>
         <div className="p-6 w-64 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
@@ -63,7 +63,7 @@ function User({ session, handleSignOut, funderData, recepitData }) {
           <a href="#">
             <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Recepit Amounts</h5>
           </a>
-          <p className="font-semibold dark:text-white text-xl"> Rs. {recepitData.filter(item => item.user === session.user.email).map((item, i) => item.receiptAmount).reduce((a, b) => a + b,0)}</p>
+          <p className="font-semibold dark:text-white text-xl"> Rs. {recepitData.filter(item => item.user === session.user.email).map((item, i) => item.receiptAmount).reduce((a, b) => a + b, 0)}</p>
         </div>
       </div>
     </DefaultLayout >

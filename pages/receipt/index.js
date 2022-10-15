@@ -7,16 +7,12 @@ import RecepitTable from '../../components/recepit/recepitTable';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleChangeAction, deleteAction } from '../../redux/reducer';
 import { BiX, BiCheck } from "react-icons/bi";
-
-const fetcher = (...args) => fetch(...args).then((res) => res.json())
 import { useRouter } from 'next/router';
 
-export default function Receipt({ dt, fundTypeData, funderData }) {
+export default function Receipt({ dt, fundTypeData, funderData, companyProfileData }) {
   const router = useRouter();
   const visible = useSelector((state) => state.app.client.toggleForm)
   const deleteId = useSelector(state => state.app.client.deleteId)
-  // const queryclient = useQueryClient();
-
 
   const dispatch = useDispatch()
 
@@ -55,7 +51,7 @@ export default function Receipt({ dt, fundTypeData, funderData }) {
 
       {/* collapsable form */}
       <div className="container mx-auto py-5">
-        {visible ? <ReceiptForm fundTypeData={fundTypeData} funderData={funderData} data={dt} /> : <></>}
+        {visible ? <ReceiptForm fundTypeData={fundTypeData} funderData={funderData} data={dt} companyProfileData={companyProfileData} /> : <></>}
         {/* <ReceiptAddForm /> */}
       </div>
 
@@ -101,7 +97,11 @@ export async function getServerSideProps({ req }) {
   const res3 = await fetch(`${process.env.BaseURL}api/funderApi`)
   const funderData = await res3.json()
 
+  const res4 = await fetch(`${process.env.BaseURL}api/companyProfileApi`)
+  const companyData = await res4.json()
+  const companyProfileData = companyData.filter(item => item.user === session.user.email)
+
   return {
-    props: { session, dt, fundTypeData, funderData }
+    props: { session, dt, fundTypeData, funderData, companyProfileData }
   }
 }
