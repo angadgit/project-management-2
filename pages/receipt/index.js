@@ -50,7 +50,7 @@ export default function Receipt({ dt, fundTypeData, funderData, companyProfileDa
       </div>
 
       {/* collapsable form */}
-      <div className="container mx-auto py-5">
+      <div className="container mx-auto">
         {visible ? <ReceiptForm fundTypeData={fundTypeData} funderData={funderData} data={dt} companyProfileData={companyProfileData} /> : <></>}
         {/* <ReceiptAddForm /> */}
       </div>

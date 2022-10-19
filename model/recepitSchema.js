@@ -2,6 +2,7 @@ import { Schema, model, models } from 'mongoose';
 
 const recepitSchema = new Schema({
   user: { type: String, required: true },
+  recepitDate: { type: String, required: true },
   fullName: { type: String, required: true },
   contactPerson: { type: String },
   contactNumber: { type: Number },

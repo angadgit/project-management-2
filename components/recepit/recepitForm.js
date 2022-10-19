@@ -18,7 +18,7 @@ export default function Form({ fundTypeData, data, funderData, companyProfileDat
 
     return (
         <div className="container mx-auto py-5">
-            {formId ? UpdateRecepitForm({ id: formId, formData, setFormData, fundDt: fundTypeData, recepitData: data, funderData }) : AddRecepitForm({ formData, setFormData, fundDt: fundTypeData, funderDt: funderData, companyProfileData })}
+            {formId ? UpdateRecepitForm({ id: formId, formData, setFormData, fundDt: fundTypeData, funderDt: funderData, companyProfileData }) : AddRecepitForm({ formData, setFormData, fundDt: fundTypeData, funderDt: funderData, companyProfileData })}
         </div>
     )
 }

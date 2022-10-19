@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import styles from '../../styles/Form.module.css';
 import { recepitValidate } from "../../lib/validate";
 
-export default function ReceiptAddForm({ fundDt, funderDt, companyProfileData }) {
+export default function ReceiptAddForm({ id, fundDt, funderDt, companyProfileData }) {
   const router = useRouter();
   const { data: session } = useSession()
   // console.log('companyProfileData', companyProfileData)
@@ -27,6 +27,7 @@ export default function ReceiptAddForm({ fundDt, funderDt, companyProfileData })
   const formik = useFormik({
     initialValues: {
       user: session.user.email,
+      recepitDate: '',
       funder: '',
       fullName: '',
       contactPerson: '',
@@ -47,12 +48,12 @@ export default function ReceiptAddForm({ fundDt, funderDt, companyProfileData })
     onSubmit
   })
 
-  funderDt?.filter(item => item.funderName === formik.values?.funder).map(item => formik.setValues({ user: session.user.email, fullName: item.funderName || '', contactPerson: item.contactPerson || '', contactNumber: item.contactNumber || '', email: item.email || '', pan: item.pan || '', addressLine1: item.addressLine1 || '', addressLine2: item.addressLine2 || '', country: item.country || '', state: item.state || '', pinCode: item.pinCode || '' }))
+  funderDt?.filter(item => item.funderName === formik.values?.funder).map(item => formik.setValues({ user: session.user.email, recepitDate: formik.values.recepitDate, fullName: item.funderName || '', contactPerson: item.contactPerson || '', contactNumber: item.contactNumber || '', email: item.email || '', pan: item.pan || '', addressLine1: item.addressLine1 || '', addressLine2: item.addressLine2 || '', country: item.country || '', state: item.state || '', pinCode: item.pinCode || '' }))
 
   async function onSubmit(values) {
     // console.log(values)
     if (companyuserCheck) {
-      let res = await fetch("/api/recepitApi", {
+      let res = await fetch(`/api/recepitApi/${id}`, {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -74,6 +75,7 @@ export default function ReceiptAddForm({ fundDt, funderDt, companyProfileData })
         router.push('/receipt')
         formik.setValues({
           user: session.user.email,
+          recepitDate: '',
           funder: '',
           fullName: '',
           contactPerson: '',
@@ -115,8 +117,6 @@ export default function ReceiptAddForm({ fundDt, funderDt, companyProfileData })
       });
     }
   }
-
-
   return (
     <>
       <ToastContainer
@@ -132,7 +132,10 @@ export default function ReceiptAddForm({ fundDt, funderDt, companyProfileData })
         theme="light"
       />
       <form className="grid lg:grid-cols-2 w-auto gap-4" onSubmit={formik.handleSubmit}>
-        <div className={`${styles.input_group} `}>
+        <div className={`${styles.input_group} w-full ${formik.errors.recepitDate && formik.touched.recepitDate ? 'border-rose-600' : ''} ${!formik.errors.recepitDate && formik.touched.recepitDate ? 'border-green-600' : ''}`}>
+          <input type="date" name="recepitDate" {...formik.getFieldProps('recepitDate')} className={styles.input_text} placeholder="Recepit Date" />
+        </div>
+        <div className={`${styles.input_group} w-full ${formik.errors.funder && formik.touched.funder ? 'border-rose-600' : ''} ${!formik.errors.funder && formik.touched.funder ? 'border-green-600' : ''}`}>
           <select id="funder" name="funder" {...formik.getFieldProps('funder')} className={styles.input_text}>
             <option value=''>Choose a Funter</option>
             {
@@ -205,13 +208,15 @@ export default function ReceiptAddForm({ fundDt, funderDt, companyProfileData })
             </select>
             <BiPlusCircle onClick={() => setFundTypePopUp(true)} className='text-4xl text-green-300 my-auto cursor-pointer' />
           </div>
-          <div className={`${styles.input_group} w-full `}>
-            <input type="text" name="description" {...formik.getFieldProps('description')} className={styles.input_text} placeholder="description" />
-          </div>
         </div>
 
-        <button type='submit' className="flex justify-center text-md w-2/6 bg-green-500 text-white px-4 py-3 border rounded-md hover:bg-gray-50 hover:border-green-500 hover:text-green-500">Add</button>
+        <div className={`${styles.input_group} w-full `}>
+          <textarea type="text" name="description" rows="2" {...formik.getFieldProps('description')} className={styles.input_text} placeholder="description" />
+        </div>
 
+        <div className="flex gap-2 items-center">
+          <button type='submit' className="flex justify-center text-md w-2/6 bg-green-500 text-white px-4 py-3 border rounded-md hover:bg-gray-50 hover:border-green-500 hover:text-green-500">Add</button>
+        </div>
 
       </form>
 

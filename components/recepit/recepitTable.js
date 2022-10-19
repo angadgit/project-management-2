@@ -2,7 +2,7 @@ import { BiEdit, BiTrashAlt, BiShow } from "react-icons/bi";
 import { useSession } from "next-auth/react"
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleChangeAction, updateAction, deleteAction } from "../../redux/reducer";
-import {  useState } from "react";
+import { useState } from "react";
 import RecepitPrint_1 from "../printPages/recepitPrint_1";
 
 
@@ -11,38 +11,43 @@ export default function RecepitTable({ data }) {
 
   return (
     <>
-      <table className="min-w-full table-auto">
-        <thead>
-          <tr className="bg-gray-800">
-            <th className="px-16 py-2">
-              <span className="text-gray-200">Funder</span>
-            </th>
-            <th className="px-16 py-2">
-              <span className="text-gray-200">Fund Type</span>
-            </th>
-            <th className="px-16 py-2">
-              <span className="text-gray-200">Recepit Amount </span>
-            </th>
-            <th className="px-16 py-2">
-              <span className="text-gray-200">Type of fund</span>
-            </th>
-            <th className="px-16 py-2">
-              <span className="text-gray-200">Actions</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-gray-200">
-          {
-            data?.filter(item => item.user === session.user.email).map((obj, i) => <Tr {...obj} key={i} />)
-          }
-        </tbody>
-      </table>
+      <div className="overflow-auto rounded-lg">
+        <table className="md:table-fixed w-full table-auto">
+          <thead>
+            <tr className="bg-gray-800">
+              <th className="px-16 py-2">
+                <span className="text-gray-200">Date</span>
+              </th>
+              <th className="px-16 py-2">
+                <span className="text-gray-200">Funder</span>
+              </th>
+              <th className="px-16 py-2">
+                <span className="text-gray-200">Fund Type</span>
+              </th>
+              <th className="px-16 py-2">
+                <span className="text-gray-200">Recepit Amount </span>
+              </th>
+              <th className="px-16 py-2">
+                <span className="text-gray-200">Type of fund</span>
+              </th>
+              <th className="px-16 py-2">
+                <span className="text-gray-200">Actions</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-gray-200 w-auto">
+            {
+              data?.filter(item => item.user === session.user.email).map((obj, i) => <Tr {...obj} key={i} />)
+            }
+          </tbody>
+        </table>
+      </div>
     </>
   )
 }
 
 
-function Tr({ _id, fullName, funderType, receiptAmount, typeFund }) {
+function Tr({ _id, recepitDate, fullName, funderType, receiptAmount, typeFund }) {
 
   const visible = useSelector((state) => state.app.client.toggleForm)
 
@@ -72,8 +77,10 @@ function Tr({ _id, fullName, funderType, receiptAmount, typeFund }) {
   return (
     <>
       <tr className="bg-gray-50 text-center">
+        <td className="px-16 py-2">
+          <span>{recepitDate || "Unknown"}</span>
+        </td>
         <td className="px-16 py-2 flex flex-row items-center">
-          {/* <img src="#" alt="" /> */}
           <span className="text-center ml-2 font-semibold">{fullName || "Unknown"}</span>
         </td>
         <td className="px-16 py-2">
@@ -91,6 +98,8 @@ function Tr({ _id, fullName, funderType, receiptAmount, typeFund }) {
           <button className="cursor" onClick={onDelete}><BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt></button>
         </td>
       </tr>
+
+      {/* Recepit print popup  */}
       {showModal ? (
         <>
           <div
@@ -102,7 +111,6 @@ function Tr({ _id, fullName, funderType, receiptAmount, typeFund }) {
 
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  {/* <FunderAddForm/> */}
                   <RecepitPrint_1 Rid={id} />
                 </div>
                 {/*footer*/}

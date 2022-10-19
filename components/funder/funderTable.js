@@ -7,35 +7,37 @@ export default function FunderTable({ data }) {
   const { data: session } = useSession()
 
   return (
-    <table className="min-w-full table-auto">
-      <thead>
-        <tr className="bg-gray-800">
-          <th className="px-16 py-2">
-            <span className="text-gray-200">Funder</span>
-          </th>
-          <th className="px-16 py-2">
-            <span className="text-gray-200">Contact Person</span>
-          </th>
-          <th className="px-16 py-2">
-            <span className="text-gray-200">Email</span>
-          </th>
-          <th className="px-16 py-2">
-            <span className="text-gray-200">Contact Number</span>
-          </th>
-          <th className="px-16 py-2">
-            <span className="text-gray-200">Pan Id</span>
-          </th>
-          <th className="px-16 py-2">
-            <span className="text-gray-200">Actions</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody className="bg-gray-200">
-        {
-          data.filter(item => item.user === session.user.email).map((obj, i) => <Tr {...obj} key={i} />)
-        }
-      </tbody>
-    </table>
+    <div className="overflow-auto rounded-lg">
+      <table className="md:table-fixed w-full table-auto">
+        <thead>
+          <tr className="bg-gray-800">
+            <th className="px-16 py-2">
+              <span className="text-gray-200">Funder</span>
+            </th>
+            <th className="px-16 py-2">
+              <span className="text-gray-200">Contact Person</span>
+            </th>
+            <th className="px-16 py-2">
+              <span className="text-gray-200">Email</span>
+            </th>
+            <th className="px-16 py-2">
+              <span className="text-gray-200">Contact Number</span>
+            </th>
+            <th className="px-16 py-2">
+              <span className="text-gray-200">Pan Id</span>
+            </th>
+            <th className="px-16 py-2">
+              <span className="text-gray-200">Actions</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody className="bg-gray-200">
+          {
+            data.filter(item => item.user === session.user.email).map((obj, i) => <Tr {...obj} key={i} />)
+          }
+        </tbody>
+      </table>
+    </div>
   )
 }
 

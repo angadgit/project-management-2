@@ -26,6 +26,7 @@ const handler = nc()
         try {
             const recepit = await Recepit.findOne({ _id: req.query.id });
             recepit.user = req.body.user;
+            recepit.recepitDate = req.body.recepitDate;
             recepit.fullName = req.body.fullName;
             recepit.contactPerson = req.body.contactPerson;
             recepit.contactNumber = req.body.contactNumber;
