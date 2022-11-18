@@ -9,7 +9,7 @@ export default function FundTypeForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { user: session.user.email, name }
+    const data = { user: session.user.createdBy, name }
     console.log(data)
     let res = await fetch("/api/fundTypeApi", {
       method: "POST", // or 'PUT'
@@ -20,8 +20,8 @@ export default function FundTypeForm() {
     });
     const res2 = await res.json();
     if (res2.success === "Success") {
-      console.log('Success')
-      router.push('/receipt')
+      // console.log('Success')
+      router.push('/recepit')
     }
   }
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { getSession, useSession } from "next-auth/react"
-import DefaultLayout from '../../components/DefaultLayout';
+import DefaultLayout from '../DefaultLayout';
 import { BiUserPlus } from "react-icons/bi";
 import FunderForm from '../../components/funder/funderForm';
 import FunderTable from '../../components/funder/funderTable';
@@ -11,12 +11,24 @@ import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 export default function Funder({ funderData, recepitData }) {
+
   const { data: session } = useSession()
+  // console.log(session.user.userRole)
   const router = useRouter()
   const visible = useSelector((state) => state.app.client.toggleForm)
   const deleteId = useSelector(state => state.app.client.deleteId)
   const formId = useSelector((state) => state.app.client.formId)
+
+
+  const addAccess = session?.user?.access?.map((item) => item.addForms.add)
+  const deleteAccess = session?.user?.access?.map((item) => item.deleteForms.delete_dt)
+  const viewAccess = session?.user?.access?.map((item) => item.viewForms.view)
+  const updateAccess = session?.user?.access?.map((item) => item.updateForms.update)
+
+  const addForm = addAccess.map((item) => item.indexOf("funder") !== -1)
+  const viewTable = viewAccess.map((item) => item.indexOf("funder") !== -1)
 
   const dispatch = useDispatch()
 
@@ -29,12 +41,7 @@ export default function Funder({ funderData, recepitData }) {
   }
 
   const [ftCheck, setFtCheck] = React.useState()
-  useEffect(()=>{    
-    const ft = funderData?.filter(item => item._id === deleteId).map(item => setFtCheck(item.funderName))
-  })
-    
-
-  // console.log(ftCheck, recepitData.map(item => item.fullName))
+  if (!funderData) return <div>Funder Loading...</div>;
 
 
   const deletehandler = async () => {
@@ -72,7 +79,6 @@ export default function Funder({ funderData, recepitData }) {
   }
 
   const canclehandler = async () => {
-    console.log("cancel")
     await dispatch(deleteAction(null))
   }
 
@@ -91,27 +97,43 @@ export default function Funder({ funderData, recepitData }) {
           pauseOnHover
           theme="light"
         />
+
         <div className="container mx-auto flex justify-between py-5 border-b">
           <div className="left flex gap-3">
-            <button className='flex bg-indigo-500 text-white px-4 py-2 border rounded-md hover:bg-grary-50 hover:border-indigo-500 hover:text-gray-800' onClick={handler}>
+
+            {/* admin add funder access  */}
+            {session.user.userRole === "super admin" ? <button className='flex bg-indigo-500 text-white px-4 py-2 border rounded-md hover:bg-grary-50 hover:border-indigo-500 hover:text-gray-800' onClick={handler}>
               Add Funder <span className='px-1'><BiUserPlus size={23}></BiUserPlus></span>
-            </button>
+            </button> : ""}
+
+            {/* users add funder access are not  */}
+            {addForm[0] ? <button className='flex bg-indigo-500 text-white px-4 py-2 border rounded-md hover:bg-grary-50 hover:border-indigo-500 hover:text-gray-800' onClick={handler}>
+              Add Funder <span className='px-1'><BiUserPlus size={23}></BiUserPlus></span>
+            </button> : <div></div>}
+
           </div>
           {deleteId ? DeleteComponent({ deletehandler, canclehandler }) : <></>}
         </div>
 
         {/* collapsable form */}
-        {visible ? <FunderForm data={funderData} /> : <></>}
+        {visible ? <FunderForm data={funderData} session={session} /> : <></>}
 
         {/* table */}
-        <div className="container mx-auto">
-          <FunderTable data={funderData} />
-        </div>
 
+        {/* access for admin  */}
+        {session?.user.userRole === "super admin" ? <div className="container mx-auto">
+          <FunderTable session={session} Funders={funderData} recepitData={recepitData} deleteAccess={deleteAccess} viewAccess={viewAccess} updateAccess={updateAccess} />
+        </div> : ""}
+
+        {/* access for users  */}
+        {viewTable[0] ? <div className="container mx-auto">
+          <FunderTable session={session} Funders={funderData} recepitData={recepitData} deleteAccess={deleteAccess} viewAccess={viewAccess} updateAccess={updateAccess} />
+        </div> : ""}
+        
       </DefaultLayout>
     )
   } catch (error) {
-    console.log(error)
+    alert(error)
   }
 }
 
@@ -128,26 +150,31 @@ function DeleteComponent({ deletehandler, canclehandler }) {
 }
 
 export async function getServerSideProps({ req }) {
-  const session = await getSession({ req })
-  // console.log(req)
-  // authorize user return session
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login",
-        premanent: false
+
+  try {
+    const session = await getSession({ req })
+    if (!session) {
+      return {
+        redirect: {
+          destination: "/login",
+          premanent: false
+        }
       }
     }
+
+    const res = await fetch(`${process.env.BaseURL}api/funderApi`)
+    const funders = await res.json()
+    const funderData = funders?.filter((item) => item.user === session.user.createdBy);
+
+    const res2 = await fetch(`${process.env.BaseURL}api/recepitApi`)
+    const dt = await res2.json()
+    const recepitData = dt.filter(item => item.user === session.user.createdBy)
+
+    return {
+      props: { session, funderData, recepitData }
+    }
+  } catch (error) {
+    console.error("Error fetching homepage data", error);
   }
 
-  const res = await fetch(`${process.env.BaseURL}api/funderApi`)
-  const funderData = await res.json()
-
-  const res2 = await fetch(`${process.env.BaseURL}api/recepitApi`)
-  const dt = await res2.json()
-  const recepitData = dt.filter(item => item.user === session.user.email)
-
-  return {
-    props: { session, funderData, recepitData }
-  }
 }

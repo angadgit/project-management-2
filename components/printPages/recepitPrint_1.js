@@ -2,12 +2,19 @@ import React, { useRef, useEffect, useState } from 'react'
 import ReactToPrint from 'react-to-print';
 import Image from "next/image";
 import { useSession } from "next-auth/react"
+import Pdf from "react-to-pdf";
+import { BsPrinter } from 'react-icons/bs';
+import { AiOutlineCloudDownload } from 'react-icons/ai';
 
-export default function RecepitPrint_1({Rid}) {
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
+
+export default function RecepitPrint_1({ Rid }) {
   // console.log(Rid)
   const componentRef = useRef()
+
   const { data: session } = useSession()
-  
+
   const [dt, setDt] = useState("")
   const [isLoading, setLoading] = useState(false)
   const [data, setData] = useState(null)
@@ -23,31 +30,54 @@ export default function RecepitPrint_1({Rid}) {
       })
   }, [])
 
-  // console.log("recepit",recepitData)
 
   useEffect(() => {
     setLoading(true)
     fetch('/api/companyProfileApi')
-    .then((res) => res.json())
-    .then((data) => {
-      setData(data)
-      setLoading(false)
-    })
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data)
+        setLoading(false)
+      })
   }, [])
-  
+
   if (isLoading) return <p>Loading...</p>
   if (!data) return <p>No profile data</p>
 
   setTimeout(() => {
-    const item = data.filter(item => item.user === session.user.email);
+    const item = data.filter(item => item.user === session.user.createdBy);
     item.map(it => setDt(it))
   }, 2000);
-  // console.log(dt)
+
+  const printDocument = () => {
+    html2canvas(componentRef.current).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, "JPEG", 0, 0);
+      pdf.save("recepit.pdf");
+    });
+  };
+
+  // const printDocument = () => {
+  //   const componentWidth = Number(componentRef.current?.offsetWidth);
+  //   const componentHeight = Number(componentRef.current?.offsetHeight);
+  //   const orientation = Number(componentWidth) >= Number(componentHeight) ? 'l' : 'p';
+
+  //   html2canvas(componentRef.current).then((imgData) => {
+  //     const pdf = new jsPDF({
+  //       orientation,
+  //       unit: 'px'
+  //     });
+  //     pdf.internal.pageSize.width = componentWidth;
+  //     pdf.internal.pageSize.height = componentHeight;
+  //     pdf.addImage(imgData, 'PNG', 0, 0, componentWidth, componentHeight);
+  //     pdf.save("skills.pdf");
+  //   });
+  // };
 
   return (
     <>
       <div className='flex justify-center'>
-
         <div className=' mt-5 w-xl p-5 text-center' ref={componentRef}>
           <h1 className='text-xl'>80G / Donations Receipt</h1><hr />
           <div className='grid grid-cols-6 gap-4 mt-5'>
@@ -57,7 +87,7 @@ export default function RecepitPrint_1({Rid}) {
             </div>
             <div className='col-start-2 col-span-4'>
               <p className='text-lg mb-0'>{dt.name}</p>
-              <span>{dt.addressLine1+ " " + dt.addressLine2 + " " + dt.city + " " + dt.state + " " + dt.pinCode}</span>
+              <span>{dt.addressLine1 + " " + dt.addressLine2 + " " + dt.city + " " + dt.state + " " + dt.pinCode}</span>
               <p className='flex justify-center gap-1'> Mobile <span className=''>{dt.mobileNo},</span> Office no <span className=''>{dt.officeNo},</span>  Email <span className=''>{dt.email}</span></p>
             </div>
             <div className='text-end mr-5'>
@@ -65,7 +95,7 @@ export default function RecepitPrint_1({Rid}) {
             </div>
           </div>
           <div className='text-end mr-5'>
-            <p>Date {new Date().toLocaleString() + ''}</p>
+            <p>Date {recepitData?.recepitDate}</p>
           </div>
           <div className='grid grid-cols-2'>
             <div className='text-start'>
@@ -95,11 +125,19 @@ export default function RecepitPrint_1({Rid}) {
           <hr />
         </div>
       </div>
-      <div className='text-end'>
+      <div className='text-end space-x-4 mx-10'>
+
         <ReactToPrint
-          trigger={() => <button variant='outlined'>Print / Download</button>}
+          trigger={() => <button variant='outlined' className='text-2xl text-blue-500'> <BsPrinter /></button>}
           content={() => componentRef.current}
         />
+
+        {/* <Pdf targetRef={componentRef} filename="Recepit.pdf" x={0.5} y={.5} scale={1}>
+          {({ toPdf }) => <button onClick={toPdf} className='text-2xl text-red-500'><AiOutlineCloudDownload /></button>}
+        </Pdf> */}
+
+        <button onClick={printDocument} className='text-2xl text-red-500'><AiOutlineCloudDownload /></button>
+
       </div>
     </>
   )

@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { useFormik } from 'formik';
 import { registerValidate } from '../lib/validate'
 import { useRouter } from 'next/router';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Register() {
 
@@ -26,31 +28,67 @@ export default function Register() {
     })
 
     async function onSubmit(values) {
-        const options = {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(values)
+        const data = { name: values.username, createdBy: values.email, email: values.email, userRole: 'super admin', password: values.password, cpassword: values.cpassword, userName: values.username }
+        console.log(data)
+        let res = await fetch("/api/auth/signup", {
+            method: "POST", // or 'PUT'
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        const res2 = await res.json();
+        console.log(res2);
+        if (res2.status) {
+            toast.success(res2.message, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+            router.push('/')
         }
-
-        await fetch('/api/auth/signup', options)
-            .then(res => res.json())
-            .then((data) => {
-                if (data) router.push('/')
-            })
+        else {
+            toast.error(res2.message, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
     }
 
     return (
         <Layout>
-
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
 
             <Head>
                 <title>Register</title>
             </Head>
 
-            <section className='w-3/4 mx-auto flex flex-col gap-10'>
+            <section className='w-full p-5  mx-auto flex flex-col gap-10'>
                 <div className="title">
-                    <h1 className='text-gray-800 text-4xl font-bold py-4'>Register</h1>
-                    <p className='w-3/4 mx-auto text-gray-400'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, officia?</p>
+                    <h1 className='text-gray-800 text-4xl font-bold'>Register</h1>
+                    {/* <p className='w-3/4 mx-auto text-gray-400'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, officia?</p> */}
                 </div>
 
                 {/* form */}
@@ -119,7 +157,7 @@ export default function Register() {
 
                 {/* bottom */}
                 <p className='text-center text-gray-400 '>
-                    Have an account? <Link href={'/login'}><a className='text-blue-700'>Sign In</a></Link>
+                    Have an account? <Link href={'/login'}><span className='text-blue-700'>Sign In</span></Link>
                 </p>
             </section>
         </Layout>

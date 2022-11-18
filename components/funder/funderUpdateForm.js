@@ -9,6 +9,7 @@ import { Formik, Form, Field } from "formik";
 export default function FunderAddForm({ id }) {
   const { data: session } = useSession()
   const router = useRouter();
+  // console.log(session)
 
   const refreshData = () => {
     router.replace(router.asPath);
@@ -56,12 +57,14 @@ export default function FunderAddForm({ id }) {
       })
   }, [])
 
+  console.log(session.user.createdBy)
   async function onSubmit(e) {
     // console.log(values)
     e.preventDefault();
     const data = {
-      user: session.user.email, funderName, contactPerson, contactNumber, email, pan, funderType, funderCategory, addressLine1, addressLine2, country, state, pinCode, nationality, website
+      user: session.user.createdBy, funderName, contactPerson, contactNumber, email, pan, funderType, funderCategory, addressLine1, addressLine2, country, state, pinCode, nationality, website
     }
+    console.log(data)
     if (funderValidate) {
       let res = await fetch(`/api/funderApi/${id}`, {
         method: "PUT", // or 'PUT'
@@ -83,11 +86,11 @@ export default function FunderAddForm({ id }) {
           theme: "light",
         });
         if (router.pathname === '/funder') {
-          console.log('path funder')
+          // console.log('path funder')
           refreshData()
         } else {
-          router.push('/receipt')
-          console.log('path receipt')
+          router.push('/recepit')
+          // console.log('path receipt')
         }
       } else {
         toast.error('Funder not Updated !', {

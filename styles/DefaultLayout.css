@@ -3,8 +3,7 @@
   font-size: 18px;
   line-height: 64px;
   cursor: pointer;
-  transition: color 0.3s;
-}
+  transition: color 0.3s;}
 
 #components-layout-demo-custom-trigger .trigger:hover {
   color: #1890ff;
@@ -16,8 +15,10 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
+
 .site-layout .site-layout-background {
-  background: #fff;
+  /* background: #fff; */
+  /* background: red; */
   box-shadow: 0 0 3px #ccc;
   border-radius: 5px;
   margin: 10px;

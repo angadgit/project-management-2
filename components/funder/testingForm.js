@@ -50,11 +50,11 @@ const BasicExample = ({ id }) => {
         theme: "light",
       });
       if (router.pathname === '/funder') {
-        console.log('path funder')
+        // console.log('path funder')
         refreshData()
       } else {
-        router.push('/receipt')
-        console.log('path receipt')
+        router.push('/recepit')
+        // console.log('path receipt')
       }
     } else {
       toast.error('Funder not Updated !', {
@@ -90,7 +90,7 @@ const BasicExample = ({ id }) => {
       />
       <Formik
         initialValues={{
-          user: session.user.email,
+          user: session.user.createdBy,
           funderName: data?.funderName,
           contactPerson: data?.contactPerson,
           contactNumber: data?.contactNumber,

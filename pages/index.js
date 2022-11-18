@@ -1,17 +1,29 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
-import { useState } from 'react'
 import { getSession, useSession, signOut } from "next-auth/react"
-import DefaultLayout from '../components/DefaultLayout';
+import DefaultLayout from './DefaultLayout';
 import { FiUsers } from "react-icons/fi";
 import { FaMoneyCheckAlt } from "react-icons/fa";
+import useSWR from "swr";
 
-export default function Home({ funderData, recepitData }) {
+
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
+export default function Home({ recepitData, funderdata }) {
 
   const { data: session } = useSession()
 
+  // const { data: funder, error } = useSWR("/api/funderApi", fetcher);
+  // const funderdata = funder?.filter((item) => item.user === session.user.email);
+  // const { data: recepit } = useSWR("/api/recepitApi", fetcher);
+  // const recepitData = recepit?.filter((item) => item.user === session.user.email);
+  // console.log(funderdata)
+
+  // if (error) return <div>Failed to load</div>;
+  // if (!funder) return <div>Funder Loading...</div>;
+  // if (!funderdata) return <div>Funder Loading...</div>;
+  // if (!recepitData) return <div>Recepit Loading...</div>;
 
   function handleSignOut() {
     signOut()
@@ -23,7 +35,7 @@ export default function Home({ funderData, recepitData }) {
         <title>Home Page</title>
       </Head>
 
-      {session ? User({ session, handleSignOut, funderData, recepitData }) : Guest()}
+      {session ? User({ session, handleSignOut, recepitData, funderdata }) : Guest()}
     </div>
   )
 }
@@ -42,12 +54,22 @@ function Guest() {
 }
 
 // Authorize User
-function User({ session, handleSignOut, funderData, recepitData }) {
+function User({ session, recepitData, funderdata }) {
+  // console.log(funderdata)
 
+  // const { data: funder, error } = useSWR("/api/funderApi", fetcher);
+  // const funderdata = funder?.filter((item) => item.user === session.user.email);
+  // const { data: recepit } = useSWR("/api/recepitApi", fetcher);
+  // const recepitData = recepit?.filter((item) => item.user === session.user.email);
+  // // console.log(funderdata)
 
+  // if (error) return <div>Failed to load</div>;
+  // if (!funder) return <div>Funder Loading...</div>;
+  // if (!funderdata) return <div>Funder Loading...</div>;
+  // if (!recepitData) return <div>Recepit Loading...</div>;
 
   return (
-    <DefaultLayout>
+    <DefaultLayout session={session}>
       <div className='flex'>
         <div className="p-6 w-64 mr-5 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
           <FiUsers className='mb-2 w-10 h-10 text-gray-500 dark:text-gray-400' />
@@ -55,7 +77,7 @@ function User({ session, handleSignOut, funderData, recepitData }) {
             <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Total Funder</h5>
           </a>
           <p className="font-semibold dark:text-white text-xl">
-            {funderData?.filter(item => item.user === session.user.email).map((item, i) => i).reduce((a, b) => a + b,1)}
+            {funderdata?.map((item, i) => i).reduce((a, b) => a + b, 1)}
           </p>
         </div>
         <div className="p-6 w-64 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
@@ -63,7 +85,7 @@ function User({ session, handleSignOut, funderData, recepitData }) {
           <a href="#">
             <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Recepit Amounts</h5>
           </a>
-          <p className="font-semibold dark:text-white text-xl"> Rs. {recepitData.filter(item => item.user === session.user.email).map((item, i) => item.receiptAmount).reduce((a, b) => a + b, 0)}</p>
+          <p className="font-semibold dark:text-white text-xl"> Rs. {recepitData?.map((item, i) => item.receiptAmount).reduce((a, b) => a + b, 0)}</p>
         </div>
       </div>
     </DefaultLayout >
@@ -72,25 +94,35 @@ function User({ session, handleSignOut, funderData, recepitData }) {
 
 
 export async function getServerSideProps({ req }) {
-  const session = await getSession({ req })
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false
+  try {
+    const session = await getSession({ req })
+
+    if (!session) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false
+        }
       }
     }
-  }
 
-  const funder = await fetch(`${process.env.BaseURL}api/funderApi`)
-  const funderData = await funder.json()
+    const funder = await fetch(`${process.env.BaseURL}api/funderApi`)
+    const funderData = await funder.json()
+    const funderdata = funderData?.filter((item) => item.user === session.user.email);
+    
+    const recepit = await fetch(`${process.env.BaseURL}api/recepitApi`)
+    const recepit_dt = await recepit.json()
+    const recepitData = recepit_dt?.filter((item) => item.user === session.user.email);
 
-  const recepit = await fetch(`${process.env.BaseURL}api/recepitApi`)
-  const recepitData = await recepit.json()
+    // console.log(funderdata)
 
-  return {
-    props: { session, funderData, recepitData }
+    return {
+      props: { session, recepitData, funderdata }
+    }
+
+  } catch (error) {
+    console.error("Error fetching homepage data", error);
   }
 
 }

@@ -2,30 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { useSession } from "next-auth/react"
 
 
-const CompanyProfileView = () => {
+const CompanyProfileView = ({ data }) => {
+  // console.log(data)
   const { data: session } = useSession()
-
-  const [data, setData] = useState(null)
-  const [isLoading, setLoading] = useState(false)
-  useEffect(() => {
-    setLoading(true)
-    fetch('/api/companyProfileApi')
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data)
-        setLoading(false)
-      })
-  }, [])
-
-  if (isLoading) return <p>Loading...</p>
-  if (!data) return <p>No profile data</p>
 
   return (
     <>
       <div className="grid grid-row-2 gap-4 place-content-center ">
 
         {
-          data.filter(item => item.user === session.user.email).map((obj, i) => <Tr {...obj} key={i} />)
+          data?.map((obj, i) => <Tr {...obj} key={i} />)
         }
 
 
@@ -35,22 +21,6 @@ const CompanyProfileView = () => {
 }
 
 function Tr({ _id, logo, name, email, pan, officeNo, mobileNo, addressLine1, addressLine2, country, state, pinCode, twelveA, eightyG, organizationType, organizationRegistrationNo }) {
-
-  // const visible = useSelector((state) => state.app.client.toggleForm)
-  // const dispatch = useDispatch()
-
-  // const onUpdate = () => {
-  //   dispatch(toggleChangeAction(_id))
-  //   if (visible) {
-  //     dispatch(updateAction(_id))
-  //   }
-  // }
-
-  // const onDelete = () => {
-  //   if (!visible) {
-  //     dispatch(deleteAction(_id))
-  //   }
-  // }
 
   return (
     <>
@@ -66,7 +36,7 @@ function Tr({ _id, logo, name, email, pan, officeNo, mobileNo, addressLine1, add
       <div className="grid grid-cols-2 gap-8 place-content-center mt-5">
 
         <div> <span> Company Name <h1 className="font-semibold">{name}</h1> </span></div>
-        <div> <span> Street Address <h1 className="font-semibold">{addressLine1 + " "+  addressLine2}</h1> </span></div>
+        <div> <span> Street Address <h1 className="font-semibold">{addressLine1 + " " + addressLine2}</h1> </span></div>
         {/* <div> <span> City <h1 className="font-semibold">{dt.city}</h1 > </span></div> */}
         <div> <span> State <h1 className="font-semibold">{country}</h1 > </span></div>
         <div> <span> State <h1 className="font-semibold">{state}</h1 > </span></div>

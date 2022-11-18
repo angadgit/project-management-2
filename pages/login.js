@@ -48,10 +48,10 @@ export default function Login() {
                 <title>Login</title>
             </Head>
 
-            <section className='w-3/4 mx-auto flex flex-col gap-10'>
+            <section className='w-full p-5 mx-auto flex flex-col gap-10'>
                 <div className="title">
                     <h1 className='text-gray-800 text-4xl font-bold py-4'>Login</h1>
-                    <p className='w-3/4 mx-auto text-gray-400'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, officia?</p>
+                    {/* <p className='w-3/4 mx-auto text-gray-400'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, officia?</p> */}
                 </div>
 
                 {/* form */}
@@ -93,7 +93,7 @@ export default function Login() {
                         </button>
                     </div>
 
-                    <div className="input-button">
+                    {/* <div className="input-button">
                         <button type='button' onClick={handleGoogleSignin} className={styles.button_custom}>
                             Sign In with Google <Image src={'/assets/google.svg'} width="20" height={20} alt="google" ></Image>
                         </button>
@@ -102,13 +102,13 @@ export default function Login() {
                         <button type='button' onClick={() => signIn()} className={styles.button_custom}>
                             Sign In with Github <Image src={'/assets/github.svg'} width={25} height={25} alt="github"></Image>
                         </button>
-                    </div>
+                    </div> */}
                 </form>
 
                 {/* bottom */}
-                <p className='text-center text-gray-400 '>
-                    dont have an account yet? <Link href={'/register'}><a className='text-blue-700'>Sign Up</a></Link>
-                </p>
+                <span className='text-center text-gray-400 '>
+                    Dont have an account yet? <Link href={'/register'}><span className='text-blue-700'>Sign Up</span></Link>
+                </span>
             </section>
 
         </Layout>

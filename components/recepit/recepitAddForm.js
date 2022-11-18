@@ -18,6 +18,7 @@ export default function ReceiptAddForm({ id, fundDt, funderDt, companyProfileDat
   const [fundTypePopUp, setFundTypePopUp] = React.useState(false);
 
   const [companyuserCheck, setCompanyuserCheck] = React.useState()
+
   React.useEffect(() => {
     companyProfileData?.map(item => setCompanyuserCheck(item.user))
     // console.log(companyuserCheck)
@@ -26,7 +27,7 @@ export default function ReceiptAddForm({ id, fundDt, funderDt, companyProfileDat
 
   const formik = useFormik({
     initialValues: {
-      user: session.user.email,
+      user: session.user.createdBy,
       recepitDate: '',
       funder: '',
       fullName: '',
@@ -48,12 +49,12 @@ export default function ReceiptAddForm({ id, fundDt, funderDt, companyProfileDat
     onSubmit
   })
 
-  funderDt?.filter(item => item.funderName === formik.values?.funder).map(item => formik.setValues({ user: session.user.email, recepitDate: formik.values.recepitDate, fullName: item.funderName || '', contactPerson: item.contactPerson || '', contactNumber: item.contactNumber || '', email: item.email || '', pan: item.pan || '', addressLine1: item.addressLine1 || '', addressLine2: item.addressLine2 || '', country: item.country || '', state: item.state || '', pinCode: item.pinCode || '' }))
+  funderDt?.filter(item => item.funderName === formik.values?.funder).map(item => formik.setValues({ user: session.user.createdBy, recepitDate: formik.values.recepitDate, fullName: item.funderName || '', contactPerson: item.contactPerson || '', contactNumber: item.contactNumber || '', email: item.email || '', pan: item.pan || '', addressLine1: item.addressLine1 || '', addressLine2: item.addressLine2 || '', country: item.country || '', state: item.state || '', pinCode: item.pinCode || '' }))
 
   async function onSubmit(values) {
-    // console.log(values)
+    console.log(values)
     if (companyuserCheck) {
-      let res = await fetch(`/api/recepitApi/${id}`, {
+      let res = await fetch(`/api/recepitApi`, {
         method: "POST", // or 'PUT'
         headers: {
           "Content-Type": "application/json",
@@ -72,9 +73,9 @@ export default function ReceiptAddForm({ id, fundDt, funderDt, companyProfileDat
           progress: undefined,
           theme: "light",
         });
-        router.push('/receipt')
+        router.push('/recepit')
         formik.setValues({
-          user: session.user.email,
+          user: session.user.createdBy,
           recepitDate: '',
           funder: '',
           fullName: '',
@@ -139,7 +140,7 @@ export default function ReceiptAddForm({ id, fundDt, funderDt, companyProfileDat
           <select id="funder" name="funder" {...formik.getFieldProps('funder')} className={styles.input_text}>
             <option value=''>Choose a Funter</option>
             {
-              funderDt?.filter(item => item.user === session.user.email).map((obj) => <option value={obj.funderName || ''} key={obj._id} > {obj.funderName} </option>)
+              funderDt?.filter(item => item.user === session.user.createdBy).map((obj) => <option value={obj.funderName || ''} key={obj._id} > {obj.funderName} </option>)
             }
           </select>
           <BiPlusCircle onClick={() => setFunderPopUp(true)} className='text-4xl text-green-400 my-auto cursor-pointer' />
@@ -203,7 +204,7 @@ export default function ReceiptAddForm({ id, fundDt, funderDt, companyProfileDat
             <select id="typeFund" name="typeFund" {...formik.getFieldProps('typeFund')} className={styles.input_text}>
               <option value=''>Choose Type of Fund</option>
               {
-                fundDt?.filter(item => item.user === session.user.email).map((obj) => <option value={obj.name || ''} key={obj._id} > {obj.name} </option>)
+                fundDt?.filter(item => item.user === session.user.createdBy).map((obj) => <option value={obj.name || ''} key={obj._id} > {obj.name} </option>)
               }
             </select>
             <BiPlusCircle onClick={() => setFundTypePopUp(true)} className='text-4xl text-green-300 my-auto cursor-pointer' />

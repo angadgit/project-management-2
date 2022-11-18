@@ -14,7 +14,7 @@ export default function FunderAddForm() {
   }
   const formik = useFormik({
     initialValues: {
-      user: session.user.email,
+      user: session.user.createdBy,
       funderName: '',
       contactPerson: '',
       contactNumber: '',
@@ -36,7 +36,7 @@ export default function FunderAddForm() {
 
 
   async function onSubmit(values) {
-    // console.log(values)
+    console.log(values)
     let res = await fetch("/api/funderApi", {
       method: "POST", // or 'PUT'
       headers: {
@@ -60,7 +60,7 @@ export default function FunderAddForm() {
         // console.log('path funder')
         refreshData()
         formik.setValues({
-          user: session.user.email,
+          user: session.user.createdBy,
           funderName: '',
           contactPerson: '',
           contactNumber: '',

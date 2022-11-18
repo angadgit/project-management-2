@@ -15,7 +15,7 @@ export default function Form({ fundTypeData, data, funderData, companyProfileDat
 
     const [formData, setFormData] = useReducer(formReducer, {})
     const formId = useSelector((state) => state.app.client.formId)
-
+// console.log(fundTypeData)
     return (
         <div className="container mx-auto py-5">
             {formId ? UpdateRecepitForm({ id: formId, formData, setFormData, fundDt: fundTypeData, funderDt: funderData, companyProfileData }) : AddRecepitForm({ formData, setFormData, fundDt: fundTypeData, funderDt: funderData, companyProfileData })}
