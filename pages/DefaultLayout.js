@@ -1,31 +1,26 @@
 import {
-  MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, LogoutOutlined, HomeOutlined, CopyOutlined, UnorderedListOutlined, ShopOutlined, UsergroupAddOutlined, UserSwitchOutlined,
+  MenuUnfoldOutlined, MenuFoldOutlined, LogoutOutlined
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout } from "antd";
 import React, { useState, useEffect } from "react";
 const { Header, Sider, Content } = Layout;
 import "antd/dist/antd.css"
 import Link from "next/link";
-import { getSession, useSession, signOut } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 import { useRouter } from 'next/router';
 import Image from "next/image";
-import { BsBarChartSteps } from 'react-icons/bs';
-import { AiOutlineFundProjectionScreen } from 'react-icons/ai';
-import SidebarMenu from "../components/sidbar";
 
 const App = ({ children }) => {
   const router = useRouter()
-
   const { data: session } = useSession()
-
   const [collapsed, setCollapsed] = useState(false);
 
+  // Signout function 
   function handleSignOut() {
     signOut()
   }
 
-  // console.log(session)
-
+  // router urls manu 
   const menuItems = [
     {
       href: '/',
@@ -61,19 +56,24 @@ const App = ({ children }) => {
     },
   ];
 
+  if(!session) return (<div>session out</div>)
+
   return (
     <Layout>
+      {/* sidebar  */}
       <Sider trigger={null} collapsible collapsed={collapsed} className="overflow-hidden">
+        {/* logo image div  */}
         <div className="logo my-5">
           {/* <Image src={'/assets/vedvika.png'} width={250} height={100} alt="logo" className="mx-auto p-2"></Image> */}
-          <Image src={'/assets/vedvika.png'} width={250} height={100} alt={"logo"} loading="eager" className="mx-auto p-2" />
-
+          <Image src={'/assets/vedvika.png'} width={250} height={100} alt={"logo"} className="mx-auto p-2" />
         </div>
 
+        {/* url routers  */}
         <div className='flex flex-col md:flex-row flex-1'>
           <aside className=' w-full md:w-60'>
             <nav>
-              {session.user.userRole === "super admin" ? <ul className="">
+              {/* super admin routers and users routers */}
+              {session?.user.userRole === "super admin" ? <ul className="">
                 {menuItems.map(({ href, title }) => (
                   <li className='m-2' key={title}>
                     <Link href={href} className={`flex p-2 text-white rounded hover:bg-fuchsia-400 hover:text-white cursor-pointer ${router.asPath === href && 'bg-fuchsia-600 text-white'
@@ -83,7 +83,7 @@ const App = ({ children }) => {
                   </li>
                 ))}
               </ul> : <ul className="">
-                {session.user.formPermission.map((item) => (
+                {session?.user.formPermission.map((item) => (
                   <li className='m-2' key={item}>
                     <Link href={item} className={`flex p-2 uppercase text-white rounded hover:bg-fuchsia-400 hover:text-white cursor-pointer ${router.asPath === item && 'bg-fuchsia-600 text-white'
                       }`} >
@@ -92,13 +92,12 @@ const App = ({ children }) => {
                   </li>
                 ))}
               </ul>}
-
             </nav>
           </aside>
         </div>
-
       </Sider>
 
+      {/* layout header part */}
       <Layout className="site-layout bg-slate-400">
         <Header
           className="site-layout-background flex justify-between"
