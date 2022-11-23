@@ -1,27 +1,17 @@
+import Head from "next/head";
 import React, { useState } from "react";
 import { getSession, useSession } from "next-auth/react";
 import App from "../DefaultLayout";
-import useSWR from "swr";
 import GanttChart from "../../components/GanttChart/GanttChart";
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
-
-export default function ProjectGanttChart({ session, projectData }) {
-  // const { data: session } = useSession();
-
-  // const { data: projects, error } = useSWR("/api/projectAddApi", fetcher);
-  // const projectData = projects?.filter(
-  //   (item) => item.user === session?.user.email
-  // );
-
-  // if (error) return <div>Failed to load</div>;
-  // if (!projectData) return <div>Gantt Chart Loading...</div>;
-  // if (!projects) return <div>Project Data Loading...</div>;
+export default function ProjectGanttChart({ session, projectData, err }) {
 
   if(!projectData) return<div>ProjectData not available</div>
+  if(err) return <div> {err} </div>
 
   return (
     <>
+    <Head><title>Project Gantt Chart</title></Head>
       <App>
         <GanttChart projectData={projectData} />
         {/* <GanttChart_2/> */}
@@ -54,5 +44,9 @@ export async function getServerSideProps({ req }) {
     };
   } catch (error) {
     console.error("Error fetching homepage data", error);
+    const err = await error
+    return {
+      props: { err },
+    };
   }
 }

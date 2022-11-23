@@ -7,17 +7,60 @@ import {
 } from "react-table";
 import styles from "../../styles/Form.module.css";
 import { BiEdit, BiTrashAlt, BiShow } from "react-icons/bi";
+import { useRouter } from "next/router";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 export default function ProjectTable({ session, ProjectData }) {
+  const router = useRouter();
+  const refreshData = () => {
+    router.replace("/project-manage");
+  };
+
   const ProjectRef = useRef();
   ProjectRef.current = ProjectData;
 
   const onView = (rowIdx) => {
     console.log(rowIdx);
   };
+  // projectAddApi
+  const deletehandler = async (rowIdx) => {
+    // console.log(rowIdx);
+    const id = rowIdx;
+    if (id) {
+      await fetch(`/api/projectAddApi/${id}`, { method: "DELETE" });
+      refreshData();
+      toast.success("Project Removed", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
 
   const onDelete = (rowIdx) => {
-    console.log(rowIdx);
+    confirmAlert({
+      title: "Are you sure?",
+      message: "You want to delete this data?",
+      buttons: [
+        {
+          label: "Yes, Delete it!",
+          onClick: () => deletehandler(rowIdx)
+        },
+        {
+          label: "No"
+          // onClick: () => alert("Click No")
+        }
+      ]
+    });
+    // console.log(rowIdx);
   };
 
   const columns = useMemo(
@@ -102,6 +145,18 @@ export default function ProjectTable({ session, ProjectData }) {
 
   return (
     <div className="list row">
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className="col-md-12">
         <div className="input-group mb-3">
           {/* {console.log(globalFilter)} */}

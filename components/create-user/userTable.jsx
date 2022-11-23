@@ -13,13 +13,20 @@ import { useRouter } from "next/router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector, useDispatch } from "react-redux";
+
 import {
   toggleChangeAction,
   updateAction,
   deleteAction,
 } from "../../redux/reducer";
 
-export default function UserTable({ Users }) {
+export default function UserTable({
+  session,
+  Users,
+  deleteAccess,
+  viewAccess,
+  updateAccess,
+}) {
   const router = useRouter();
 
   const refreshData = () => {
@@ -29,21 +36,27 @@ export default function UserTable({ Users }) {
 
   const visible = useSelector((state) => state.app.client.toggleForm);
 
-  // const view = viewAccess.map((item) => item.indexOf("funder") !== -1)
-  // const delete_Access = deleteAccess.map(item => item.indexOf("funder") !== -1)
-  // const update = updateAccess.map(item => item.indexOf("funder") !== -1)
+  const view = viewAccess?.map((item) => item.indexOf("create-user") !== -1);
+  const delete_Access = deleteAccess?.map(
+    (item) => item.indexOf("create-user") !== -1
+  );
+  const update = updateAccess?.map(
+    (item) => item.indexOf("create-user") !== -1
+  );
+
+  // console.log(view, delete_Access, update);
 
   const ProjectRef = useRef();
   ProjectRef.current = Users;
 
   const onView = (rowIdx) => {
     console.log(rowIdx);
-    alert("Under Work")
+    alert("Under Work");
   };
 
   const onUpdate = (rowIdx) => {
     console.log(rowIdx);
-    alert("Under Work")
+    alert("Under Work");
     // dispatch(toggleChangeAction(rowIdx));
     // if (visible) {
     //   dispatch(updateAction(rowIdx));
@@ -124,35 +137,71 @@ export default function UserTable({ Users }) {
           return (
             <div className="flex gap-5 ml-2">
               {/* view  */}
-              <button className="cursor" onClick={() => onView(rowIdx)}>
-                <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
-              </button>
-              {/* {
-                view[0] ? <button className="cursor" onClick={() => onView(rowIdx)}>
+              {session?.user.userRole === "super admin" ? (
+                <>
+                  <button className="cursor" onClick={() => onView(rowIdx)}>
+                    <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
+                  </button>
+                  <button className="cursor" onClick={() => onDelete(rowIdx)}>
+                    <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
+                  </button>
+                  <button className="cursor" onClick={() => onUpdate(rowIdx)}>
+                    <BiEdit size={25} color={"rgb(255, 204, 0)"} />
+                  </button>
+                </>
+              ) : (
+                <>
+                  {view[0] ? (
+                    <button className="cursor" onClick={() => onView(rowIdx)}>
+                      <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                  {delete_Access[0] ? (
+                    <button className="cursor" onClick={() => onDelete(rowIdx)}>
+                      <BiTrashAlt
+                        size={25}
+                        color={"rgb(244,63,94)"}
+                      ></BiTrashAlt>
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                  {update[0] ? (
+                    <button className="cursor" onClick={() => onUpdate(rowIdx)}>
+                      <BiEdit size={25} color={"rgb(255, 204, 0)"} />
+                    </button>
+                  ) : (
+                    ""
+                  )}
+                </>
+              )}
+              {/* {view[0] ? (
+                <button className="cursor" onClick={() => onView(rowIdx)}>
                   <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
                 </button>
-                  : ""
-              } */}
+              ) : (
+                ""
+              )} */}
 
               {/* delete  */}
-              <button className="cursor" onClick={() => onDelete(rowIdx)}>
-                <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
-              </button>
-              {/* {
-                delete_Access[0] ? <button className="cursor" onClick={() => onDelete(rowIdx)} >
+              {/* {delete_Access[0] ? (
+                <button className="cursor" onClick={() => onDelete(rowIdx)}>
                   <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
-                </button> : ""
-              } */}
+                </button>
+              ) : (
+                ""
+              )} */}
 
               {/* update  */}
-              <button className="cursor" onClick={() => onUpdate(rowIdx)}>
-                <BiEdit size={25} color={"rgb(255, 204, 0)"} />
-              </button>
-              {/* {
-                update[0] ? <button className="cursor" onClick={() => onUpdate(rowIdx)}>
+              {/* {update[0] ? (
+                <button className="cursor" onClick={() => onUpdate(rowIdx)}>
                   <BiEdit size={25} color={"rgb(255, 204, 0)"} />
-                </button> : ""
-              } */}
+                </button>
+              ) : (
+                ""
+              )} */}
             </div>
           );
         },

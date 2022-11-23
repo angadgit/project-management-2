@@ -264,7 +264,6 @@ export default function RecepitTable({ session, data, deleteAccess, viewAccess, 
 
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  {/* <FunderAddForm/> */}
                   <RecepitPrint_1 Rid={id} />
                 </div>
                 {/*footer*/}

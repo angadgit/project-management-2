@@ -6,6 +6,9 @@ import DefaultLayout from './DefaultLayout';
 import { FiUsers } from "react-icons/fi";
 import { FaMoneyCheckAlt } from "react-icons/fa";
 import useSWR from "swr";
+import { NumericFormat } from 'react-number-format';
+import React from 'react';
+
 
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
@@ -55,18 +58,7 @@ function Guest() {
 
 // Authorize User
 function User({ session, recepitData, funderdata }) {
-  // console.log(funderdata)
-
-  // const { data: funder, error } = useSWR("/api/funderApi", fetcher);
-  // const funderdata = funder?.filter((item) => item.user === session.user.email);
-  // const { data: recepit } = useSWR("/api/recepitApi", fetcher);
-  // const recepitData = recepit?.filter((item) => item.user === session.user.email);
-  // // console.log(funderdata)
-
-  // if (error) return <div>Failed to load</div>;
-  // if (!funder) return <div>Funder Loading...</div>;
-  // if (!funderdata) return <div>Funder Loading...</div>;
-  // if (!recepitData) return <div>Recepit Loading...</div>;
+  // console.log(NumericFormat)
 
   return (
     <DefaultLayout session={session}>
@@ -85,7 +77,14 @@ function User({ session, recepitData, funderdata }) {
           <a href="#">
             <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Recepit Amounts</h5>
           </a>
-          <p className="font-semibold dark:text-white text-xl"> Rs. {recepitData?.map((item, i) => item.receiptAmount).reduce((a, b) => a + b, 0)}</p>
+          <p  className="font-semibold dark:text-white text-xl">{""}</p>
+          <NumericFormat
+            value={recepitData?.map((item, i) => item.receiptAmount).reduce((a, b) => a + b, 0)}
+            prefix="Rs. "
+            thousandSeparator=","
+            displayType={'text'}
+            className='bg-gray-800 text-white text-xl cursor-default'
+          />
         </div>
       </div>
     </DefaultLayout >
@@ -110,7 +109,7 @@ export async function getServerSideProps({ req }) {
     const funder = await fetch(`${process.env.BaseURL}api/funderApi`)
     const funderData = await funder.json()
     const funderdata = funderData?.filter((item) => item.user === session.user.email);
-    
+
     const recepit = await fetch(`${process.env.BaseURL}api/recepitApi`)
     const recepit_dt = await recepit.json()
     const recepitData = recepit_dt?.filter((item) => item.user === session.user.email);

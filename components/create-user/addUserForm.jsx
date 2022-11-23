@@ -6,6 +6,8 @@ import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
+import { userFormValidate } from "../../lib/validate";
+import styles from '../../styles/Form.module.css';
 
 const Forms = [
   { value: "funder", label: "Funder" },
@@ -17,6 +19,9 @@ const Forms = [
 
 export default function AddUserForm() {
   const router = useRouter();
+  const refreshData = () => {
+    router.replace(router.asPath);
+  }
   const { data: session } = useSession();
   const [logoUrl, setLogoUrl] = useState();
   const [imageUrl, setImageUrl] = useState(null);
@@ -123,7 +128,7 @@ console.log(imageUrl)
       userName: "",
       password: "",
     },
-    // validate: registerValidate,
+    validate: userFormValidate,
     onSubmit,
   });
 
@@ -227,7 +232,7 @@ console.log(imageUrl)
 
       <form
         onSubmit={formik.handleSubmit}
-        className="grid lg:grid-cols-2 w-auto gap-4"
+        className="grid lg:grid-cols-2 w-auto gap-2"
         encType="multipart/form-data"
       >
         <div className="flex gap-4 items-center">
@@ -278,50 +283,51 @@ console.log(imageUrl)
             </div>
           </div>
         </div>
-        <div className="input-type">
+        <div className={`${styles.input_group} ${formik.errors.name && formik.touched.name ? 'border-rose-600' : ''} ${!formik.errors.name && formik.touched.name ? 'border-green-600' : ''}`}>
           <input
             type="text"
             name="name"
             {...formik.getFieldProps("name")}
-            className="border w-full px-5 py-3 focus:outline-none rounded-md"
+            className={styles.input_text}
             placeholder="Name"
           />
         </div>
-        <div className="input-type">
+        <div className={`${styles.input_group} ${formik.errors.email && formik.touched.email ? 'border-rose-600' : ''} ${!formik.errors.email && formik.touched.email ? 'border-green-600' : ''}`}>
           <input
             type="email"
             name="email"
             {...formik.getFieldProps("email")}
-            className="border w-full px-5 py-3 focus:outline-none rounded-md"
+            className={styles.input_text}
             placeholder="Email"
           />
         </div>
-        <div className="input-type">
+        <div className={`${styles.input_group} ${formik.errors.department && formik.touched.department ? 'border-rose-600' : ''} ${!formik.errors.department && formik.touched.department ? 'border-green-600' : ''}`}>
           <input
             type="text"
             name="department"
             {...formik.getFieldProps("department")}
-            className="border w-full px-5 py-3 focus:outline-none rounded-md"
+            className={styles.input_text}
             placeholder="Department"
           />
         </div>
 
         <div className="flex gap-4 items-center">
-          <div className="input-type w-full">
+          <div className={`${styles.input_group} ${formik.errors.mobileNo && formik.touched.mobileNo ? 'border-rose-600' : ''} ${!formik.errors.mobileNo && formik.touched.mobileNo ? 'border-green-600' : ''}`}>
             <input
-              type="number"
+              type="text"
               name="mobileNo"
               {...formik.getFieldProps("mobileNo")}
-              className="border w-full px-5 py-3 focus:outline-none rounded-md"
+              onKeyPress={(event) => { if (!/[0-9]/.test(event.key)) { event.preventDefault(); } }}
+              className={styles.input_text}
               placeholder="Mobile No."
             />
           </div>
-          <div className="input-type w-full">
+          <div className={`${styles.input_group} ${formik.errors.userRole && formik.touched.userRole ? 'border-rose-600' : ''} ${!formik.errors.userRole && formik.touched.userRole ? 'border-green-600' : ''}`}>
             <select
               id="userRole"
               name="userRole"
               {...formik.getFieldProps("userRole")}
-              className="border w-full px-5 py-3 focus:outline-none rounded-md"
+              className={styles.input_text}
             >
               <option value="">Choose User Role</option>
               {/* <option value="super admin">Super admin</option> */}
@@ -331,13 +337,13 @@ console.log(imageUrl)
           </div>
         </div>
 
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-2 items-center">
           <div className="input-type w-full">
             <input
               type="text"
               name="addressLine1"
               {...formik.getFieldProps("addressLine1")}
-              className="border w-full px-5 py-3 focus:outline-none rounded-md"
+              className={styles.input_text}
               placeholder="Address Line 1"
             />
           </div>
@@ -346,19 +352,19 @@ console.log(imageUrl)
               type="text"
               name="addressLine2"
               {...formik.getFieldProps("addressLine2")}
-              className="border w-full px-5 py-3 focus:outline-none rounded-md"
+              className={styles.input_text}
               placeholder="Address Line 2"
             />
           </div>
         </div>
 
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-2 items-center">
           <div className="input-type w-full">
             <input
               type="text"
               name="country"
               {...formik.getFieldProps("country")}
-              className="border w-full px-5 py-3 focus:outline-none rounded-md"
+              className={styles.input_text}
               placeholder="Country"
             />
           </div>
@@ -367,7 +373,7 @@ console.log(imageUrl)
               type="text"
               name="state"
               {...formik.getFieldProps("state")}
-              className="border w-full px-5 py-3 focus:outline-none rounded-md"
+              className={styles.input_text}
               placeholder="State"
             />
           </div>
@@ -376,20 +382,17 @@ console.log(imageUrl)
               type="number"
               name="pinCode"
               {...formik.getFieldProps("pinCode")}
-              className="border w-full px-5 py-3 focus:outline-none rounded-md"
+              className={styles.input_text}
               placeholder="Zip Code"
             />
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="input-type w-full">
+          <div className={`${styles.input_group} w-full ${formik.errors.formPermission && formik.touched.formPermission ? 'border-rose-600' : ''} ${!formik.errors.formPermission && formik.touched.formPermission ? 'border-green-600' : ''}`}>
             <Select
               options={Forms}
               name="formPermission"
-              // {...formik.getFieldProps("formPermission")}
-              // onChange={formik.handleChange}
-              // value={formik.values.formPermission}
               onChange={(e) =>
                 setSelectForms(
                   Array.isArray(e) ? e.map((hotel) => hotel.value) : []
@@ -397,38 +400,28 @@ console.log(imageUrl)
               }
               isMulti
               placeholder="Form Permission"
-              className=""
+              className={`w-full py-1 px-1 border rounded-xl bg-slate-50 focus:outline-none border-none`}
             />
-            {/* <select
-              name="formPermission"
-              multiple
-              {...formik.getFieldProps("formPermission")}
-              className="border w-full px-5 py-3 focus:outline-none rounded-md"
-            >
-              <option value="">Choose User Form Permissions</option>
-              <option value="funder">Funder</option>
-              <option value="receipt">Recepit</option>
-            </select> */}
           </div>
         </div>
 
         <div className="col-span-2">
           <div className="grid grid-cols-2 items-center gap-2">
-            <div className="input-type w-full">
+            <div className={`${styles.input_group} ${formik.errors.userName && formik.touched.userName ? 'border-rose-600' : ''} ${!formik.errors.userName && formik.touched.userName ? 'border-green-600' : ''}`}>
               <input
                 type="text"
                 name="userName"
                 {...formik.getFieldProps("userName")}
-                className="border w-full px-5 py-3 focus:outline-none rounded-md"
+                className={styles.input_text}
                 placeholder="User Name"
               />
             </div>
-            <div className="input-type w-full">
+            <div className={`${styles.input_group} ${formik.errors.password && formik.touched.password ? 'border-rose-600' : ''} ${!formik.errors.password && formik.touched.password ? 'border-green-600' : ''}`}>
               <input
                 type="password"
                 name="userPassword"
                 {...formik.getFieldProps("password")}
-                className="border w-full px-5 py-3 focus:outline-none rounded-md"
+                className={styles.input_text}
                 placeholder="User Password"
               />
             </div>

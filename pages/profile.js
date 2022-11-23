@@ -1,23 +1,20 @@
-import Link from "next/link";
+import Head from "next/head";
 import DefaultLayout from './DefaultLayout';
 import { getSession, useSession, signOut } from "next-auth/react"
 
 export default function Profile() {
 
   const { data: session } = useSession()
-  // console.log(session.user.logo)
-  const logo = session?.user.logo.split("./public");
-  // console.log(logo)
+  const logo = session?.user.logo?.split("./public");
+
+  // console.log(session?.user.addressLine1, session?.user.addressLine2, session?.user.country, session?.user.state, session?.user.pinCode)
+
+  const fullAddress = (session?.user.addressLine1, session?.user.addressLine2, session?.user.country, session?.user.state, session?.user.pinCode)
+
   return (
+    <>
+    <Head><title>User Profile</title></Head>
     <DefaultLayout>
-      {/* <section className="container mx-auto text-center">
-        <h3 className="text-4xl font-bold">User Profile</h3>
-        <div className='details'>
-          <h5>{session.user.name}</h5>
-          <h5>{session.user.email}</h5>
-        </div>
-        <Link href={"/"}>Home Page</Link>
-      </section> */}
       <section className="text-gray-600 body-font bg-white rounded-lg shadow-lg">
         <div className="container mx-auto flex pt-5 md:flex-row flex-col items-center w-fit">
           <h3 className="text-4xl font-bold">User Profile</h3>
@@ -42,36 +39,38 @@ export default function Profile() {
                 <span className="font-bold text-lg">Email</span>
                 <h1 className="text-lg text-gray-700 font-sans">{session.user.email}</h1>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+
+              {session?.user.mobileNo ? <div className="grid grid-cols-2 gap-3">
                 <span className="font-bold text-lg">Mobile</span>
                 <h1 className="text-lg text-gray-700 font-sans">{session.user.mobileNo}</h1>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <span className="font-bold text-lg">Department</span>
-                <h1 className="text-lg text-gray-700 font-sans">{session.user.department}</h1>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
+              </div> : ""}
+
+
+              {
+                session?.user.department ? <div className="grid grid-cols-2 gap-3">
+                  <span className="font-bold text-lg">Department</span>
+                  <h1 className="text-lg text-gray-700 font-sans">{session.user.department}</h1>
+                </div> : ""
+              }
+
+              {fullAddress ? <div className="grid grid-cols-2 gap-3">
                 <span className="font-bold text-lg">Address</span>
                 <h1 className="text-lg text-gray-700 font-sans">{session.user.addressLine1}, {session.user.addressLine2} <br />{session.user.country}, {session.user.state} - {session.user.pinCode} </h1>
-              </div>
+              </div> : ""}
+
+
               <div className="grid grid-cols-2 gap-3">
                 <span className="font-bold text-lg">Role</span>
                 <h1 className="text-lg text-gray-700 font-sans">{session.user.userRole}</h1>
               </div>
-              {/* <div className="grid grid-cols-2 gap-3">
-                <span className="font-bold text-lg">Email</span>
-                <h1 className="text-lg text-gray-700 font-sans">{session?.user.access.map((item) => (<><span>{item}</span></>))}</h1>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <span className="font-bold text-lg">Email</span>
-                <h1 className="text-lg text-gray-700 font-sans">{session?.user.formPermission.map(item => <><span>{item}</span></>)}</h1>
-              </div> */}
+              
             </div>
           </div>
         </div>
       </section>
 
     </DefaultLayout>
+    </>
   )
 }
 

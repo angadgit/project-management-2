@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react'
+import Head from "next/head";
+import React from 'react'
 import { getSession, useSession } from "next-auth/react"
 import DefaultLayout from '../DefaultLayout';
 import { BiUserPlus } from "react-icons/bi";
-import FunderForm from '../../components/funder/funderForm';
-import FunderTable from '../../components/funder/funderTable';
+// import FunderForm from '../../components/funder/funderForm';
+// import FunderTable from '../../components/funder/funderTable';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleChangeAction, deleteAction } from '../../redux/reducer';
 import { BiX, BiCheck } from "react-icons/bi";
 import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { GetServerSideProps } from 'next'
+import { Axios } from 'axios';
+import dynamic from "next/dynamic";
 
+const FunderForm = dynamic(() => import("../../components/funder/funderForm"));
+const FunderTable = dynamic(() => import("../../components/funder/funderTable"));
 
 export default function Funder({ funderData, recepitData }) {
 
@@ -27,8 +33,8 @@ export default function Funder({ funderData, recepitData }) {
   const viewAccess = session?.user?.access?.map((item) => item.viewForms.view)
   const updateAccess = session?.user?.access?.map((item) => item.updateForms.update)
 
-  const addForm = addAccess.map((item) => item.indexOf("funder") !== -1)
-  const viewTable = viewAccess.map((item) => item.indexOf("funder") !== -1)
+  const addForm = addAccess?.map((item) => item.indexOf("funder") !== -1)
+  const viewTable = viewAccess?.map((item) => item.indexOf("funder") !== -1)
 
   const dispatch = useDispatch()
 
@@ -84,6 +90,10 @@ export default function Funder({ funderData, recepitData }) {
 
   try {
     return (
+      <>
+      <Head>
+        <title>Funder</title>
+      </Head>
       <DefaultLayout>
         <ToastContainer
           position="top-center"
@@ -129,8 +139,9 @@ export default function Funder({ funderData, recepitData }) {
         {viewTable[0] ? <div className="container mx-auto">
           <FunderTable session={session} Funders={funderData} recepitData={recepitData} deleteAccess={deleteAccess} viewAccess={viewAccess} updateAccess={updateAccess} />
         </div> : ""}
-        
+
       </DefaultLayout>
+      </>
     )
   } catch (error) {
     alert(error)
@@ -149,9 +160,16 @@ function DeleteComponent({ deletehandler, canclehandler }) {
   )
 }
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, res }) {
 
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=43200, stale-while-revalidate=60'
+  )
+  
   try {
+
+
     const session = await getSession({ req })
     if (!session) {
       return {
@@ -171,10 +189,42 @@ export async function getServerSideProps({ req }) {
     const recepitData = dt.filter(item => item.user === session.user.createdBy)
 
     return {
-      props: { session, funderData, recepitData }
+      props: (async function () {
+        return {
+          session, funderData, recepitData
+        }
+      })(),
+      // props: { session, funderData, recepitData }
     }
   } catch (error) {
     console.error("Error fetching homepage data", error);
   }
 
 }
+
+// export const getServerSideProps: GetServerSideProps  = async ({ req }) => {
+//   try {
+//     const session = await getSession({ req })
+//     if (!session) {
+//       return {
+//         redirect: {
+//           destination: "/login",
+//           premanent: false
+//         }
+//       }
+//     }
+
+//     const res = await Axios.get('/api/funderApi')
+//     const funders = await res.json()
+//     const funderData = funders?.filter((item) => item.user === session.user.createdBy);
+
+//     const res2 = await Axios.get(`/api/recepitApi`)
+//     const dt = await res2.json()
+//     const recepitData = dt.filter(item => item.user === session.user.createdBy)
+
+//     return { props: { funderData, recepitData, session } }
+
+//   } catch (err) {
+//     return { props: { error: 'Something went wrong' } }
+//   }
+// }

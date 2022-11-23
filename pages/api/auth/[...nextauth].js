@@ -4,14 +4,10 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import connectMongo from '../../../database/conn'
 import Users from '../../../model/UserSchema'
 import { compare } from 'bcryptjs';
+// import connectMongo from '../../../middleware/mongoose';
 
 export default NextAuth({
     providers: [
-        // Google Provider
-        // GoogleProvider({
-        //     clientId: process.env.GOOGLE_ID,
-        //     clientSecret: process.env.GOOGLE_SECRET
-        // }),
 
         CredentialsProvider({
             name: "Credentials",

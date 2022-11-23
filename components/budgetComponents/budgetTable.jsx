@@ -9,75 +9,72 @@ import styles from "../../styles/Form.module.css";
 import { BiEdit, BiTrashAlt, BiShow, BiRepost } from "react-icons/bi";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { useRouter } from 'next/router';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useSelector, useDispatch } from 'react-redux'
-import { toggleChangeAction, updateAction, deleteAction } from "../../redux/reducer";
+import { useRouter } from "next/router";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  toggleChangeAction,
+  updateAction,
+  deleteAction,
+} from "../../redux/reducer";
 
-export default function FunderTable({ session, Funders, deleteAccess, viewAccess, updateAccess, recepitData }) {
-
-  const router = useRouter()
+export default function BudgetTable({
+  session,
+  Budget,
+  deleteAccess,
+  viewAccess,
+  updateAccess,
+}) {
+  const router = useRouter();
   // console.log(session)
   const refreshData = () => {
-    router.replace('/funder');
-  }
-  const dispatch = useDispatch()
-  const visible = useSelector((state) => state.app.client.toggleForm)
+    router.replace("/budget");
+  };
+  const dispatch = useDispatch();
+  const visible = useSelector((state) => state.app.client.toggleForm);
 
-  const view = viewAccess.map((item) => item.indexOf("funder") !== -1)
-  const delete_Access = deleteAccess.map(item => item.indexOf("funder") !== -1)
-  const update = updateAccess.map(item => item.indexOf("funder") !== -1)
+  const view = viewAccess.map((item) => item.indexOf("budget") !== -1);
+  const delete_Access = deleteAccess.map(
+    (item) => item.indexOf("budget") !== -1
+  );
+  const update = updateAccess.map((item) => item.indexOf("budget") !== -1);
 
   const ProjectRef = useRef();
-  ProjectRef.current = Funders;
+  ProjectRef.current = Budget;
+  // console.log("projectRed", ProjectRef);
 
   const onView = (rowIdx) => {
     console.log(rowIdx);
+    alert("Under work")
   };
 
   const onUpdate = (rowIdx) => {
     // console.log(rowIdx);
-    dispatch(toggleChangeAction(rowIdx))
+    dispatch(toggleChangeAction(rowIdx));
     if (visible) {
-      dispatch(updateAction(rowIdx))
+      dispatch(updateAction(rowIdx));
     }
   };
 
-  const [ftCheck, setFtCheck] = React.useState()
-
   const deletehandler = async (rowIdx) => {
-    console.log(rowIdx)
+    // console.log(rowIdx);
     const id = rowIdx;
     if (id) {
-      if (recepitData.map(item => item.fullName).indexOf(ftCheck)) {
-        await fetch(`/api/funderApi/${id}`, { method: "DELETE", })
-        refreshData();
-        toast.success('Funder Removed', {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-      else {
-        toast.info('Receipt generated please remove receipt !', {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
+      await fetch(`/api/budgetApi/${id}`, { method: "DELETE" });
+      refreshData();
+      toast.success("Budget Removed", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
-  }
+  };
 
   const onDelete = (rowIdx) => {
     confirmAlert({
@@ -86,13 +83,13 @@ export default function FunderTable({ session, Funders, deleteAccess, viewAccess
       buttons: [
         {
           label: "Yes, Delete it!",
-          onClick: () => deletehandler(rowIdx)
+          onClick: () => deletehandler(rowIdx),
         },
         {
-          label: "No"
+          label: "No",
           // onClick: () => alert("Click No")
-        }
-      ]
+        },
+      ],
     });
     // console.log(rowIdx);
   };
@@ -108,18 +105,18 @@ export default function FunderTable({ session, Funders, deleteAccess, viewAccess
       },
       {
         width: "50",
-        Header: "Funder Category",
-        accessor: "funderCategory",
+        Header: "Project Name",
+        accessor: "projectName",
       },
       {
         width: "40",
-        Header: "Email",
-        accessor: "email",
+        Header: "Program Name",
+        accessor: "programName",
       },
       {
         width: "30",
-        Header: "Funder Type",
-        accessor: "funderType",
+        Header: "Activity Name",
+        accessor: "activityName",
       },
       {
         Header: "Actions",
@@ -131,38 +128,46 @@ export default function FunderTable({ session, Funders, deleteAccess, viewAccess
           return (
             <div className="flex gap-5 ml-2">
               {/* view  */}
-              {session?.user.userRole === "super admin" ? <>
+              {session?.user.userRole === "super admin" ? (
+                <>
+                  <button className="cursor" onClick={() => onView(rowIdx)}>
+                    <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
+                  </button>
+                  <button className="cursor" onClick={() => onDelete(rowIdx)}>
+                    <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
+                  </button>
+                  <button className="cursor" onClick={() => onUpdate(rowIdx)}>
+                    <BiEdit size={25} color={"rgb(255, 204, 0)"} />
+                  </button>
+                </>
+              ) : (
+                ""
+              )}
+              {view[0] ? (
                 <button className="cursor" onClick={() => onView(rowIdx)}>
                   <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
                 </button>
-                <button className="cursor" onClick={() => onDelete(rowIdx)} >
+              ) : (
+                ""
+              )}
+
+              {/* delete  */}
+              {delete_Access[0] ? (
+                <button className="cursor" onClick={() => onDelete(rowIdx)}>
                   <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
                 </button>
+              ) : (
+                ""
+              )}
+
+              {/* update  */}
+              {update[0] ? (
                 <button className="cursor" onClick={() => onUpdate(rowIdx)}>
                   <BiEdit size={25} color={"rgb(255, 204, 0)"} />
                 </button>
-              </> : ""}
-              {
-                view[0] ? <button className="cursor" onClick={() => onView(rowIdx)}>
-                  <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
-                </button>
-                  : ""
-              }
-
-              {/* delete  */}
-              {
-                delete_Access[0] ? <button className="cursor" onClick={() => onDelete(rowIdx)} >
-                  <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
-                </button> : ""
-              }
-
-              {/* update  */}
-              {
-                update[0] ? <button className="cursor" onClick={() => onUpdate(rowIdx)}>
-                  <BiEdit size={25} color={"rgb(255, 204, 0)"} />
-                </button> : ""
-              }
-
+              ) : (
+                ""
+              )}
             </div>
           );
         },
@@ -192,7 +197,7 @@ export default function FunderTable({ session, Funders, deleteAccess, viewAccess
   } = useTable(
     {
       columns,
-      data: Funders,
+      data: Budget,
     },
     useGlobalFilter,
     useSortBy,
@@ -201,21 +206,8 @@ export default function FunderTable({ session, Funders, deleteAccess, viewAccess
 
   return (
     <div className="list row">
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
       <div className="col-md-12">
         <div className="input-group mb-3">
-          {/* {console.log(globalFilter)} */}
           <input
             type="text"
             className={`${styles.input_text} `}

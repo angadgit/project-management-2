@@ -54,9 +54,13 @@ const App = ({ children }) => {
       href: '/project-ganttChart',
       title: 'Project Gantt chart',
     },
+    {
+      href: '/budget',
+      title: 'Budget',
+    },
   ];
 
-  if(!session) return (<div>session out</div>)
+  if (!session) return (<div>session out</div>)
 
   return (
     <Layout>
@@ -65,7 +69,8 @@ const App = ({ children }) => {
         {/* logo image div  */}
         <div className="logo my-5">
           {/* <Image src={'/assets/vedvika.png'} width={250} height={100} alt="logo" className="mx-auto p-2"></Image> */}
-          <Image src={'/assets/vedvika.png'} width={250} height={100} alt={"logo"} className="mx-auto p-2" />
+          <Image src={'/assets/vedvika.png'} width={250} height={100} alt={"logo"} layout="responsive"
+            loading="lazy" className="mx-auto p-2" />
         </div>
 
         {/* url routers  */}

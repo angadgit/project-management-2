@@ -1,32 +1,21 @@
+import Head from "next/head";
 import React from 'react'
 import { getSession } from "next-auth/react"
 import { BiBookmarkAltPlus } from "react-icons/bi";
 import DefaultLayout from '../DefaultLayout';
-import ReceiptForm from '../../components/recepit/recepitForm';
-import RecepitTable from '../../components/recepit/recepitTable';
+// import ReceiptForm from '../../components/recepit/recepitForm';
+// import RecepitTable from '../../components/recepit/recepitTable';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleChangeAction, deleteAction } from '../../redux/reducer';
 import { BiX, BiCheck } from "react-icons/bi";
 import { useRouter } from 'next/router';
-import useSWR from "swr";
+import dynamic from "next/dynamic";
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+const ReceiptForm = dynamic(() => import("../../components/recepit/recepitForm"));
+const RecepitTable = dynamic(() => import("../../components/recepit/recepitTable"));
 
 export default function Receipt({ session, dt, fundTypeData, funderData, companyProfileData }) {
   const router = useRouter();
-
-  // const { data: funder, error } = useSWR("/api/funderApi", fetcher);
-  // const funderData = funder?.filter((item) => item.user === session.user.email);
-  // const { data: recepit } = useSWR("/api/recepitApi", fetcher);
-  // const dt = recepit?.filter((item) => item.user === session.user.email);
-  // const { data: funderType } = useSWR("/api/fundTypeApi", fetcher);
-  // const fundTypeData = funderType?.filter((item) => item.user === session.user.email);
-  // const { data: companyProfile } = useSWR("/api/companyProfileApi", fetcher);
-  // const companyProfileData = recepit?.filter((item) => item.user === session.user.email);
-  // // console.log(funderdata)
-
-
-
   const visible = useSelector((state) => state.app.client.toggleForm)
   const deleteId = useSelector(state => state.app.client.deleteId)
 
@@ -70,37 +59,51 @@ export default function Receipt({ session, dt, fundTypeData, funderData, company
   // if (!companyProfileData) return <div>Company Profile Loading...</div>;
 
   return (
-    <DefaultLayout>
-      <div className="container mx-auto flex justify-between py-5 border-b">
-        <div className="left flex gap-3">
+    <>
+      <Head><title>Recepit</title></Head>
+      <DefaultLayout>
+        <div className="container mx-auto flex justify-between py-5 border-b">
+          <div className="left flex gap-3">
 
-          {/* admin add recepit access  */}
-          {session.user.userRole === "super admin" ? <button className='flex bg-indigo-500 text-white px-4 py-2 border rounded-md hover:bg-grary-50 hover:border-indigo-500 hover:text-gray-800' onClick={handler}>
-            Add Recepit <span className='px-1'><BiBookmarkAltPlus size={23}></BiBookmarkAltPlus></span>
-          </button> : ""}
+            {/* admin add recepit access  */}
+            {session.user.userRole === "super admin" ? <button className='flex bg-indigo-500 text-white px-4 py-2 border rounded-md hover:bg-grary-50 hover:border-indigo-500 hover:text-gray-800' onClick={handler}>
+              Add Recepit <span className='px-1'><BiBookmarkAltPlus size={23}></BiBookmarkAltPlus></span>
+            </button> : <>
+              {addForm[0] ? <button className='flex bg-indigo-500 text-white px-4 py-2 border rounded-md hover:bg-grary-50 hover:border-indigo-500 hover:text-gray-800' onClick={handler}>
+                Add Recepit <span className='px-1'><BiBookmarkAltPlus size={23}></BiBookmarkAltPlus></span>
+              </button> : <div></div>}
+            </>}
 
-          {/* users add funder access are not  */}
-          {addForm[0] ? <button className='flex bg-indigo-500 text-white px-4 py-2 border rounded-md hover:bg-grary-50 hover:border-indigo-500 hover:text-gray-800' onClick={handler}>
-            Add Recepit <span className='px-1'><BiBookmarkAltPlus size={23}></BiBookmarkAltPlus></span>
-          </button> : <div></div>}
+            {/* users add funder access are not  */}
 
+
+          </div>
+          {deleteId ? DeleteComponent({ deletehandler, canclehandler }) : <></>}
         </div>
-        {deleteId ? DeleteComponent({ deletehandler, canclehandler }) : <></>}
-      </div>
 
-      {/* collapsable form */}
-      <div className="container mx-auto">
-        {visible ? <ReceiptForm fundTypeData={fundTypeData} funderData={funderData} data={dt} companyProfileData={companyProfileData} /> : <></>}
-        {/* <ReceiptAddForm /> */}
-      </div>
+        {/* collapsable form */}
+        <div className="container mx-auto">
+          {visible ? <ReceiptForm fundTypeData={fundTypeData} funderData={funderData} data={dt} companyProfileData={companyProfileData} /> : <></>}
+          {/* <ReceiptAddForm /> */}
+        </div>
 
-      {/* model popup  */}
+        {/* model popup  */}
 
-      {/* table */}
-      <div className="container mx-auto">
-        <RecepitTable data={dt} session={session} deleteAccess={deleteAccess} viewAccess={viewAccess} updateAccess={updateAccess}  />
-      </div>
-    </DefaultLayout>
+        {/* table */}
+        <div className="container mx-auto">
+          <RecepitTable data={dt} session={session} deleteAccess={deleteAccess} viewAccess={viewAccess} updateAccess={updateAccess} />
+        </div>
+        {/* {session.user.userRole === "super admin" ? <div className="container mx-auto">
+        <RecepitTable data={dt} session={session} deleteAccess={deleteAccess} viewAccess={viewAccess} updateAccess={updateAccess} />
+      </div> : <>
+        {viewTable[0] ? <div className="container mx-auto">
+          <RecepitTable data={dt} session={session} deleteAccess={deleteAccess} viewAccess={viewAccess} updateAccess={updateAccess} />
+        </div> : ""}
+      </>} */}
+
+
+      </DefaultLayout>
+    </>
   )
 }
 

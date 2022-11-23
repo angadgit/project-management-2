@@ -1,16 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react'
 import ReactToPrint from 'react-to-print';
-import Image from "next/image";
 import { useSession } from "next-auth/react"
-import Pdf from "react-to-pdf";
+// import Pdf from "react-to-pdf";
 import { BsPrinter } from 'react-icons/bs';
 import { AiOutlineCloudDownload } from 'react-icons/ai';
-
-import { jsPDF } from "jspdf";
+// import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+import Image from 'next/image';
 
 export default function RecepitPrint_1({ Rid }) {
-  // console.log(Rid)
   const componentRef = useRef()
 
   const { data: session } = useSession()
@@ -19,6 +17,9 @@ export default function RecepitPrint_1({ Rid }) {
   const [isLoading, setLoading] = useState(false)
   const [data, setData] = useState(null)
   const [recepitData, setRecepitData] = useState(null)
+
+  const imgLogo = dt.logo?.split("./public")[1]
+  // console.log(imgLogo)
 
   useEffect(() => {
     setLoading(true)
@@ -41,22 +42,21 @@ export default function RecepitPrint_1({ Rid }) {
       })
   }, [])
 
-  if (isLoading) return <p>Loading...</p>
-  if (!data) return <p>No profile data</p>
+  
 
   setTimeout(() => {
-    const item = data.filter(item => item.user === session.user.createdBy);
-    item.map(it => setDt(it))
+    const item = data?.filter(item => item.user === session.user.createdBy);
+    item?.map(it => setDt(it))
   }, 2000);
 
-  const printDocument = () => {
-    html2canvas(componentRef.current).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF();
-      pdf.addImage(imgData, "JPEG", 0, 0);
-      pdf.save("recepit.pdf");
-    });
-  };
+  // const printDocument = () => {
+  //   html2canvas(componentRef.current).then((canvas) => {
+  //     const imgData = canvas.toDataURL("image/png");
+  //     const pdf = new jsPDF();
+  //     pdf.addImage(imgData, "JPEG", 0, 0);
+  //     pdf.save("recepit.pdf");
+  //   });
+  // };
 
   // const printDocument = () => {
   //   const componentWidth = Number(componentRef.current?.offsetWidth);
@@ -74,7 +74,8 @@ export default function RecepitPrint_1({ Rid }) {
   //     pdf.save("skills.pdf");
   //   });
   // };
-
+  if (isLoading) return <p>Loading...</p>
+  if (!data) return <p>No profile data</p>
   return (
     <>
       <div className='flex justify-center'>
@@ -83,7 +84,9 @@ export default function RecepitPrint_1({ Rid }) {
           <div className='grid grid-cols-6 gap-4 mt-5'>
             <div className='w-3/4'>
               {/* <h1>logo</h1> */}
-              <img src={dt.logo} alt="logo" width="150" height="150" className="bg-black" />
+              {/* {imgLogo ? <img src={imgLogo} alt="logo" width="150" height="150" className="" /> : ""} */}
+              {imgLogo ? <Image src={imgLogo} width={250} height={250} alt={"logo"} className="object-cover object-center" /> : ""}
+
             </div>
             <div className='col-start-2 col-span-4'>
               <p className='text-lg mb-0'>{dt.name}</p>
@@ -136,7 +139,7 @@ export default function RecepitPrint_1({ Rid }) {
           {({ toPdf }) => <button onClick={toPdf} className='text-2xl text-red-500'><AiOutlineCloudDownload /></button>}
         </Pdf> */}
 
-        <button onClick={printDocument} className='text-2xl text-red-500'><AiOutlineCloudDownload /></button>
+        {/* <button onClick={printDocument} className='text-2xl text-red-500'><AiOutlineCloudDownload /></button> */}
 
       </div>
     </>

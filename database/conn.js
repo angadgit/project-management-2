@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const connectMongo = async () => {
     try {
-        const { connection } = await mongoose.connect("mongodb+srv://angad:Angad1234@cluster0.5xl6h.mongodb.net/testDB?retryWrites=true&w=majority");
+        const { connection } = await mongoose.connect(process.env.MONGO_URL);
 
         if(connection.readyState == 1){
             return Promise.resolve(true)
