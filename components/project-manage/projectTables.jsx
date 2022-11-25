@@ -24,10 +24,10 @@ export default function ProjectTable({ session, ProjectData }) {
 
   const onView = (rowIdx) => {
     console.log(rowIdx);
+    alert("Under work")
   };
   // projectAddApi
   const deletehandler = async (rowIdx) => {
-    // console.log(rowIdx);
     const id = rowIdx;
     if (id) {
       await fetch(`/api/projectAddApi/${id}`, { method: "DELETE" });
@@ -60,7 +60,6 @@ export default function ProjectTable({ session, ProjectData }) {
         }
       ]
     });
-    // console.log(rowIdx);
   };
 
   const columns = useMemo(
@@ -112,7 +111,7 @@ export default function ProjectTable({ session, ProjectData }) {
         },
       },
     ],
-    []
+    []  
   );
 
   const {

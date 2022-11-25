@@ -25,15 +25,16 @@ export default function FunderTable({ session, Funders, deleteAccess, viewAccess
   const dispatch = useDispatch()
   const visible = useSelector((state) => state.app.client.toggleForm)
 
-  const view = viewAccess.map((item) => item.indexOf("funder") !== -1)
-  const delete_Access = deleteAccess.map(item => item.indexOf("funder") !== -1)
-  const update = updateAccess.map(item => item.indexOf("funder") !== -1)
+  const view = viewAccess?.map((item) => item.indexOf("funder") !== -1)
+  const delete_Access = deleteAccess?.map(item => item.indexOf("funder") !== -1)
+  const update = updateAccess?.map(item => item.indexOf("funder") !== -1)
 
   const ProjectRef = useRef();
   ProjectRef.current = Funders;
 
   const onView = (rowIdx) => {
-    console.log(rowIdx);
+    // console.log(rowIdx);
+    alert("under work")
   };
 
   const onUpdate = (rowIdx) => {

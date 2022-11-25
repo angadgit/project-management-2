@@ -81,7 +81,7 @@ export default NextAuth({
                 session.user.id = token.uid;
                 session.user = await Users.findOne({ _id: token.uid })
             }
-
+ 
             return session;
         },
         jwt: async ({ user, token }) => {
