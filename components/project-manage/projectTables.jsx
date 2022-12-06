@@ -13,6 +13,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import ViewProject from './viewProject'
+
 export default function ProjectTable({ session, ProjectData }) {
   const router = useRouter();
   const refreshData = () => {
@@ -100,9 +104,23 @@ export default function ProjectTable({ session, ProjectData }) {
           // console.log('id',props.row.original._id)
           return (
             <div className="flex gap-5 ml-2">
-              <button className="cursor" onClick={() => onView(rowIdx)}>
+              {/* <button className="cursor" onClick={() => onView(rowIdx)}>
                 <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
-              </button>
+              </button> */}
+              <Popup
+    trigger={<button className="button"><BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow></button>}
+    modal
+    nested
+  >
+    {close => (
+      <div className="modal">
+        <button className="close" onClick={close}>
+          &times;
+        </button>
+        <ViewProject id={rowIdx}/>
+      </div>
+    )}
+  </Popup>
               <button className="cursor" onClick={() => onDelete(rowIdx)}>
                 <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
               </button>

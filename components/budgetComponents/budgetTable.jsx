@@ -19,6 +19,10 @@ import {
   deleteAction,
 } from "../../redux/reducer";
 
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import ViewBudget from './viewBudget'
+
 export default function BudgetTable({
   session,
   Budget,
@@ -130,9 +134,23 @@ export default function BudgetTable({
               {/* view  */}
               {session?.user.userRole === "super admin" ? (
                 <>
-                  <button className="cursor" onClick={() => onView(rowIdx)}>
+                  {/* <button className="cursor" onClick={() => onView(rowIdx)}>
                     <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
-                  </button>
+                  </button> */}
+                  <Popup
+    trigger={<button className="button"><BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow></button>}
+    modal
+    nested
+  >
+    {close => (
+      <div className="modal">
+        <button className="close" onClick={close}>
+          &times;
+        </button>
+        <ViewBudget id={rowIdx}/>
+      </div>
+    )}
+  </Popup>
                   <button className="cursor" onClick={() => onDelete(rowIdx)}>
                     <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
                   </button>
@@ -144,9 +162,23 @@ export default function BudgetTable({
                 ""
               )}
               {view[0] ? (
-                <button className="cursor" onClick={() => onView(rowIdx)}>
-                  <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
-                </button>
+                // <button className="cursor" onClick={() => onView(rowIdx)}>
+                //   <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
+                // </button>
+                <Popup
+    trigger={<button className="button"><BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow></button>}
+    modal
+    nested
+  >
+    {close => (
+      <div className="modal">
+        <button className="close" onClick={close}>
+          &times;
+        </button>
+        <ViewBudget id={rowIdx}/>
+      </div>
+    )}
+  </Popup>
               ) : (
                 ""
               )}

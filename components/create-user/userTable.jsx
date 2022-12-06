@@ -20,6 +20,10 @@ import {
   deleteAction,
 } from "../../redux/reducer";
 
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import ViewUser from './viewUser'
+
 export default function UserTable({
   session,
   Users,
@@ -139,9 +143,23 @@ export default function UserTable({
               {/* view  */}
               {session?.user.userRole === "super admin" ? (
                 <>
-                  <button className="cursor" onClick={() => onView(rowIdx)}>
+                  {/* <button className="cursor" onClick={() => onView(rowIdx)}>
                     <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
-                  </button>
+                  </button> */}
+                  <Popup
+    trigger={<button className="button"><BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow></button>}
+    modal
+    nested
+  >
+    {close => (
+      <div className="modal">
+        <button className="close" onClick={close}>
+          &times;
+        </button>
+        <ViewUser id={rowIdx}/>
+      </div>
+    )}
+  </Popup>
                   <button className="cursor" onClick={() => onDelete(rowIdx)}>
                     <BiTrashAlt size={25} color={"rgb(244,63,94)"}></BiTrashAlt>
                   </button>
@@ -152,9 +170,23 @@ export default function UserTable({
               ) : (
                 <>
                   {view[0] ? (
-                    <button className="cursor" onClick={() => onView(rowIdx)}>
-                      <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
-                    </button>
+                    // <button className="cursor" onClick={() => onView(rowIdx)}>
+                    //   <BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow>
+                    // </button>
+                    <Popup
+    trigger={<button className="button"><BiShow size={25} color={"rgb(0 ,0,254)"}></BiShow></button>}
+    modal
+    nested
+  >
+    {close => (
+      <div className="modal">
+        <button className="close" onClick={close}>
+          &times;
+        </button>
+        <ViewUser id={rowIdx}/>
+      </div>
+    )}
+  </Popup>
                   ) : (
                     ""
                   )}
@@ -239,6 +271,7 @@ export default function UserTable({
   );
 
   return (
+    <>
     <div className="list row">
       <div className="col-md-12">
         <div className="input-group mb-3">
@@ -393,5 +426,6 @@ export default function UserTable({
         </div>
       </div>
     </div>
+    </>
   );
 }
